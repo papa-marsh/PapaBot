@@ -60,14 +60,6 @@ case 'help':
     })()
 break;
 
-case 'test':
-    (async function(){
-        let workbook = new Excel.Workbook();
-        workbook = await workbook.xlsx.readFile('db.xlsx');
-        workbook.xlsx.writeFile('db_BACKUP.xlsx');
-    })()
-break;
-
 case 'allies':
     (async function(){
         if (!args[1]) {
@@ -259,14 +251,7 @@ case 'calendar':
     })()
 break;
 
-case 'alliance':
-(async function(){
-    if (!args[1]) {
-        relationships = await dbReadRow('Relationships', 1)
-        bot.sendMessage({ to: channelID, message: 'Alliances with existing notes:\n' + relationships.slice(1) });
-    }
-})()
-break;
+
 
 case 'admin':
 (async function(){
@@ -335,6 +320,7 @@ case 'roll':
         bot.sendMessage({ to: channelID, message: 'Error' });
     }
 break;
+
 case 'flipacoin':
     var output = 'Flipping a coin...\n';
     output = output.concat(Math.random() < 0.5 ? 'Heads' : 'Tails');
