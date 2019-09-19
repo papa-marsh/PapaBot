@@ -336,7 +336,7 @@ case 'roll':
     }
 break;
 case 'flipacoin':
-    var output = 'Flipping a coin...\n...\n';
+    var output = 'Flipping a coin...\n';
     output = output.concat(Math.random() < 0.5 ? 'Heads' : 'Tails');
     bot.sendMessage({ to: channelID, message: output });
 break;
