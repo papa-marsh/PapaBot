@@ -1,0 +1,13 @@
+{
+  "name": "PapaBot",
+  "version": "1.0.0",
+  "description": "SGBR Helper",
+  "main": "bot.js",
+  "author": "Papa Marsh",
+  "dependencies": {
+    "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+    "exceljs": "^2.0.1",
+    "googleapis": "^39.2.0",
+    "winston": "^3.2.1"
+  }
+}
