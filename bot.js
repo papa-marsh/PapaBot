@@ -15,6 +15,7 @@ var announceID = '619358591740018698';
 var consoleID = '622937431586373633';
 var testingID = '621375349334343690';
 var backupFlag = 0;
+//this is a test
 
 (function(){
     setInterval(async function() {
