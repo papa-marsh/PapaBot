@@ -188,42 +188,35 @@ case 'bonus':
 })()
 break;
 
-//REWRITE THIS GARBAGE
 case 'sectors':
 (async function(){
     sectorList = await dbReadCol('Alliance', 'C');
     if (!args[1]) {
-        var sectorCount = 0;
-        for (var i=1; i<sectorList.length; i++){
-            if (sectorList[i]) {
-                sectorCount++
-            }
-        }
+        var sectorCount = sectorList[1] ? sectorList.length - 1 : 0;
         bot.sendMessage({ to: channelID, message: sectorCount + ' Bonus Sectors:\n' + sectorList.slice(1) });
     }
     if (args[1] == 'add') {
         var sectorAdd = message.substring(13).split(',');
         var output = 'Added bonus sector(s):'
         for (var j=0; j<sectorAdd.length; j++) {
-            for (var i=25; i>0; i--) {
-                if (!sectorList[i]) {
-                    var empty = i;
-                }
-            }
-            sectorList[empty] = sectorAdd[j];
+            sectorList[sectorList.length] = sectorAdd[j];
             output = output.concat('\n' + sectorAdd[j]);
         }
         dbWriteCol('Alliance', 'C', sectorList)
         bot.sendMessage({ to: consoleID, message: output });
     }
     if (args[1] == 'remove') {
-        var sectorRemove = message.substring(16);
+        var sectorRemove = args[2];
         var removal = sectorList.indexOf(sectorRemove);
         if (removal != -1) {
-            dbWriteCell('Alliance', 'C', removal, '');
-            bot.sendMessage({ to: consoleID, message: 'Removed ' + sectorRemove + ' from bonus sector list.' });
+            for (i=removal; i<sectorList.length-1; i++) {
+                sectorList[i] = sectorList[i+1];
+            }
+            sectorList[sectorList.length-1] = null;
+            dbWriteCol('Alliance', 'C', sectorList);
+            bot.sendMessage({ to: consoleID, message: 'Removed sector ' + sectorRemove + ' from bonus sector list.' });
         }
-        else bot.sendMessage({ to: channelID, message: 'Error: Couldn\'t find sector: ' + sectorRemove + '.' });
+        else bot.sendMessage({ to: channelID, message: 'Couldn\'t find sector: ' + sectorRemove + '.' });
     }
 })()
 break;
@@ -262,7 +255,7 @@ case 'notes':
 
     }
     else if (args[1] == 'delete') {
-
+        
     }
     else {
         alliance = args[1].toUpperCase();
@@ -295,9 +288,9 @@ case 'notes':
                     for (i=removalIndex; i<notes.length-1; i++) {
                         notes[i] = notes[i+1];
                     }
-                    notes.length = notes.length - 1;
+                    notes[notes.length-1] = null;
                     dbWriteCol('Notes', notesIndex, notes);
-                    bot.sendMessage({ to: channelID, message: 'Note removed from ' + alliance + '.' });
+                    bot.sendMessage({ to: consoleID, message: 'Note removed from ' + alliance + '.' });
                 }
             }
         }
