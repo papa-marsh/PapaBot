@@ -306,6 +306,39 @@ case 'roast':
 })()
 break;
 
+case 'roll':
+    if (!args[2]) {
+        var xd = parseInt(args[1].split('d')[0], 10);
+        var dx = parseInt(args[1].split('d')[1], 10);
+        if (!Number.isInteger(xd) || !Number.isInteger(dx)) {
+            bot.sendMessage({ to: channelID, message: 'Not a valid roll.' });
+        }
+        else if (xd > 250 || dx > 100000) {
+            bot.sendMessage({ to: channelID, message: 'Maximum roll = 250d100000' });
+        }
+        else {
+            var output = 'Roll ' + xd + 'd' + dx + ':\n';
+            var result = 0;
+            for (i=xd; i>0; i--) {
+                random = (Math.floor(Math.random() * dx) + 1);
+                output = output.concat(random);
+                if (i != 1) {
+                    output = output.concat(' + ')
+                }
+                result = result + random;
+            }
+            output = output.concat('\n= ' + result);
+            bot.sendMessage({ to: channelID, message: output });
+        }
+    }
+    else {
+        bot.sendMessage({ to: channelID, message: 'Error' });
+    }
+break;
+case 'coinflip':
+
+break;
+
 default:
 (async function(){
     if (message.toLowerCase().indexOf('joke') != -1) {
