@@ -188,6 +188,7 @@ case 'bonus':
     })()
 break;
 
+//REWRITE THIS GARBAGE
 case 'sectors':
     (async function(){
         sectorList = await dbReadCol('Alliance', 'C');
@@ -251,7 +252,58 @@ case 'calendar':
     })()
 break;
 
+case 'notes':
+(async function(){
+    relationships = await dbReadRow('Notes', 1);
+    if (!args[1]) {
+        bot.sendMessage({ to: channelID, message: 'Alliances with existing notes:\n' + relationships.slice(1) });
+    }
+    else if (args[1] == 'create') {
 
+    }
+    else if (args[1] == 'delete') {
+
+    }
+    else {
+        alliance = args[1].toUpperCase();
+        notesIndex = relationships.indexOf(alliance);
+        if (notesIndex == -1) {
+            bot.sendMessage({ to: channelID, message: 'Couldn\'t find ' + alliance + ' in notes.' });
+        }
+        else {
+            notes = await dbReadCol('Notes', notesIndex);
+            if (!args[2]) {
+                var output = 'Stored notes for ' + alliance + '. (Newest first)'
+                for (i=2; i<notes.length; i++) {
+                    output = output.concat('\n - ' + notes[i]);
+                }
+                bot.sendMessage({ to: channelID, message: output });
+            }
+            else if (args[2] == 'add') {
+                notes[0] = alliance;
+                notes[1] = message.substring(message.indexOf(args[3]));
+                dbWriteCol('Notes', notesIndex, notes);
+                bot.sendMessage({ to: consoleID, message: 'New note added for ' + alliance + '.' });
+            }
+            else if (args[2] == 'remove') {
+                note = message.substring(message.indexOf(args[3]));
+                removalIndex = notes.indexOf(note);
+                if (removalIndex == -1) {
+                    bot.sendMessage({ to: channelID, message: 'Couldn\'t find note: ' + note + '. (Must paste entire note to remove it.)' });
+                }
+                else {
+                    for (i=removalIndex; i<notes.length-1; i++) {
+                        notes[i] = notes[i+1];
+                    }
+                    notes.length = notes.length - 1;
+                    dbWriteCol('Notes', notesIndex, notes);
+                    bot.sendMessage({ to: channelID, message: 'Note removed from ' + alliance + '.' });
+                }
+            }
+        }
+    }
+})()
+break;
 
 case 'admin':
 (async function(){
