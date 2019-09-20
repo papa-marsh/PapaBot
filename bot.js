@@ -247,26 +247,22 @@ break;
 
 case 'notes':
 (async function(){
-    relationships = await dbReadRow('Notes', 1);
+    allianceList = await dbReadRow('Notes', 1);
     if (!args[1]) {
-        bot.sendMessage({ to: channelID, message: 'Alliances with existing notes:\n' + relationships.slice(1) });
-    }
-    else if (args[1] == 'create') {
-
-    }
-    else if (args[1] == 'delete') {
-        
+        bot.sendMessage({ to: channelID, message: 'Alliances with existing notes:\n' + allianceList.slice(1) });
     }
     else {
         alliance = args[1].toUpperCase();
-        notesIndex = relationships.indexOf(alliance);
-        if (notesIndex == -1) {
-            bot.sendMessage({ to: channelID, message: 'Couldn\'t find ' + alliance + ' in notes.' });
-        }
-        else {
+        notesIndex = allianceList.indexOf(alliance);
+        if (notesIndex != -1) {
             notes = await dbReadCol('Notes', notesIndex);
+        }
+        if (notesIndex != -1 && args[2] != 'create') {
             if (!args[2]) {
-                var output = 'Stored notes for ' + alliance + '. (Newest first)'
+                var output = 'Stored notes for ' + alliance + '. (Newest first)';
+                if (notes.length == 2) {
+                    output = output.concat('\nNone');
+                }
                 for (i=2; i<notes.length; i++) {
                     output = output.concat('\n - ' + notes[i]);
                 }
@@ -277,6 +273,7 @@ case 'notes':
                 notes[1] = message.substring(message.indexOf(args[3]));
                 dbWriteCol('Notes', notesIndex, notes);
                 bot.sendMessage({ to: consoleID, message: 'New note added for ' + alliance + '.' });
+
             }
             else if (args[2] == 'remove') {
                 note = message.substring(message.indexOf(args[3]));
@@ -293,6 +290,22 @@ case 'notes':
                     bot.sendMessage({ to: consoleID, message: 'Note removed from ' + alliance + '.' });
                 }
             }
+            else if (args[2] == 'delete' && !args[3]) {
+                dbDeleteCol('Notes', notesIndex, 1);
+                bot.sendMessage({ to: consoleID, message: alliance + ' removed from note categories' });
+            }
+        }
+        else if (args[2] == 'create') {
+            if (notesIndex == -1) {
+                dbWriteCell('Notes', allianceList.length, 1, alliance);
+                bot.sendMessage({ to: consoleID, message: 'Added ' + alliance + ' to note categories.' });
+            }
+            else {
+                bot.sendMessage({ to: channelID, message: alliance + ' is already listed as a note category.' });
+            }
+        }
+        else {
+            bot.sendMessage({ to: channelID, message: 'Couldn\'t find ' + alliance + ' in notes.' });
         }
     }
 })()
