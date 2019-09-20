@@ -7,50 +7,54 @@ logger.add(new logger.transports.Console, { colorize: true });
 logger.level = 'debug';
 var bot = new Discord.Client({ token: auth.token, autorun: true });
 
-bot.on('ready', function (evt) { logger.info(bot.username + ' - Connected.'); });
-bot.on('message', function (user, userID, channelID, message, evt) {
-if (message.substring(0, 1) == '!' && bot.id != userID) {
-var args = message.substring(1).split(' ');
 var announceID = '619358591740018698';
 var consoleID = '622937431586373633';
 var testingID = '621375349334343690';
 var backupFlag = 0;
+var pause = 0;
 
-(function(){
-    setInterval(async function() {
-        var date = new Date();
-        var now = parseInt((date.getMonth() + 1) + (date.getDate() < 10 ? "0" : "") + date.getDate()
-            + (date.getHours() < 10 ? "0" : "") + date.getHours() + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes(), 10);
-        var calEvent = await dbReadCol('Calendar', 2);
-        var eventTime = 100 * parseInt(calEvent[2] + (calEvent[3] < 10 ? "0" : "") + calEvent[3]
-            + (calEvent[4] < 10 ? "0" : "") + calEvent[4] + (calEvent[5] < 10 ? "0" : "") + calEvent[5] + '00', 10);
-        if (now > eventTime) {
-            dbDeleteCol('Calendar', 2, 1);
-        }
-        else if (now == (eventTime - 45) && calEvent[5] == 'y') {
-            bot.sendMessage({ to: announceID, message: '@everyone - **5 minutes** until ' + calEvent[1] });
-            dbWriteCell('Calendar', 'B', '5', 'n');
-        }
-        else if (now == (eventTime - 100) && calEvent[6] == 'y') {
-            bot.sendMessage({ to: announceID, message: '**1 hour** until ' + calEvent[1] });
-            dbWriteCell('Calendar', 'B', '6', 'n');
-        }
-        else if (now == (eventTime - 10000) && calEvent[7] == 'y') {
-            bot.sendMessage({ to: announceID, message: '**24 hours** until ' + calEvent[1] });
-            dbWriteCell('Calendar', 'B', '7', 'n');
-        }
+bot.on('ready', function (evt) {
+logger.info(bot.username + ' - Connected.');
+(function(){ setInterval(async function() {
+    var date = new Date();
+    var now = parseInt((date.getMonth() + 1) + (date.getDate() < 10 ? "0" : "") + date.getDate()
+        + (date.getHours() < 10 ? "0" : "") + date.getHours() + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes(), 10);
+    var calEvent = await dbReadCol('Calendar', 2);
+    var eventTime = 100 * parseInt(calEvent[2] + (calEvent[3] < 10 ? "0" : "") + calEvent[3]
+        + (calEvent[4] < 10 ? "0" : "") + calEvent[4] + (calEvent[5] < 10 ? "0" : "") + calEvent[5] + '00', 10);
+    if (now > eventTime) {
+        dbDeleteCol('Calendar', 2, 1);
+    }
+    else if (now == (eventTime - 50) && calEvent[5] == 'y') {
+        bot.sendMessage({ to: announceID, message: '@everyone - **5 minutes** until ' + calEvent[1] });
+        dbWriteCell('Calendar', 'B', '5', 'n');
+    }
+    else if (now == (eventTime - 100) && calEvent[6] == 'y') {
+        bot.sendMessage({ to: announceID, message: '**1 hour** until ' + calEvent[1] });
+        dbWriteCell('Calendar', 'B', '6', 'n');
+    }
+    else if (now == (eventTime - 10000) && calEvent[7] == 'y') {
+        bot.sendMessage({ to: announceID, message: '**24 hours** until ' + calEvent[1] });
+        dbWriteCell('Calendar', 'B', '7', 'n');
+    }
+    if (date.getHours() == 5 && !backupFlag) {
+        dbBackup();
+        backupFlag = 1;
+        bot.sendMessage({ to: consoleID, message: 'Database backup created.' });
+    }
+    if (date.getHours() == 6) {
+        backupFlag = 0;
+    }
+}, 10000);})();});
 
-        if (date.getHours() == 5 && !backupFlag) {
-            dbBackup();
-            backupFlag = 1;
-            bot.sendMessage({ to: consoleID, message: 'Database backup created.' });
-        }
-        if (date.getHours() == 6) {
-            backupFlag = 0;
-        }
-    }, 10000);
-})();
+bot.on('message', function (user, userID, channelID, message, evt) {
+if (message.substring(0, 1) == '!' && bot.id != userID) {
+var args = message.substring(1).split(' ');
 
+if (args[0] == 'pause') { pause = 1; }
+else if (args[0] == 'unpause') { pause = 0; }
+
+if (pause == 0) {
 switch(args[0]) {
 
 case 'help':
@@ -266,6 +270,7 @@ case 'notes':
                 for (i=2; i<notes.length; i++) {
                     output = output.concat('\n - ' + notes[i]);
                 }
+                output = output.concat('\nType _!notes <tag>_ to see that alliance\'s notes' );
                 bot.sendMessage({ to: channelID, message: output });
             }
             else if (args[2] == 'add') {
@@ -315,6 +320,10 @@ case 'admin':
 (async function(){
     if (!args[1]) {
         result = await dbReadCell('Admin', 'A', '11')
+        bot.sendMessage({ to: channelID, message: result });
+        result = await dbReadCell('Admin', 'A', '12')
+        bot.sendMessage({ to: channelID, message: result });
+        result = await dbReadCell('Admin', 'A', '13')
         bot.sendMessage({ to: channelID, message: result });
     }
     if (args[1] == 'reset') {
@@ -403,7 +412,7 @@ default:
 })();
 break;
 
-}}});
+}}}});
 
 async function dbWriteCell(sheet, col, row, val) {
     let workbook = new Excel.Workbook();
