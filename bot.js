@@ -169,7 +169,7 @@ case 'bonus':
         var index = memberList.indexOf(member);
         if (index != -1 && member) {
             dbWriteCell('Alliance', 'B', index, sector);
-            bot.sendMessage({ to: consoleID, message: member + '\'s bonus hero is on sector ' + sector + '.' });
+            bot.sendMessage({ to: consoleID, message: member + '\'s bonus hero is now on sector ' + sector + '.' });
         }
         else bot.sendMessage({ to: channelID, message: 'Error: Couldn\'t find member: ' + member + '.' });
     }
@@ -179,11 +179,11 @@ case 'bonus':
         var heroIndex = heroList.indexOf(removal);
         if (memberIndex != -1 && removal) {
             dbWriteCell('Alliance', 'B', memberIndex, '');
-            bot.sendMessage({ to: consoleID, message: 'Done. ' + removal + '\'s bonus hero is now unused.' });
+            bot.sendMessage({ to: consoleID, message: removal + '\'s bonus hero is now unused.' });
         }
         else if (heroIndex != -1 && removal) {
             dbWriteCell('Alliance', 'B', heroIndex, '');
-            bot.sendMessage({ to: consoleID, message: 'Done. Sector ' + removal + ' no longer has a bonus hero.' });
+            bot.sendMessage({ to: consoleID, message: 'Sector ' + removal + ' no longer has a bonus hero.' });
         }
         else {
             bot.sendMessage({ to: channelID, message: 'Error: Couldn\'t find ' + removal + ' in member/bonus hero lists.' });
