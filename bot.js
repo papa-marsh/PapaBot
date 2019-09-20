@@ -169,7 +169,7 @@ case 'bonus':
         var index = memberList.indexOf(member);
         if (index != -1 && member) {
             dbWriteCell('Alliance', 'B', index, sector);
-            bot.sendMessage({ to: consoleID, message: 'Done. ' + member + '\'s bonus hero is on sector ' + sector + '.' });
+            bot.sendMessage({ to: consoleID, message: member + '\'s bonus hero is on sector ' + sector + '.' });
         }
         else bot.sendMessage({ to: channelID, message: 'Error: Couldn\'t find member: ' + member + '.' });
     }
