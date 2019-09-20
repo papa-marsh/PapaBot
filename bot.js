@@ -325,6 +325,10 @@ case 'admin':
         bot.sendMessage({ to: channelID, message: result });
         result = await dbReadCell('Admin', 'A', '13')
         bot.sendMessage({ to: channelID, message: result });
+        result = await dbReadCell('Admin', 'A', '14')
+        bot.sendMessage({ to: channelID, message: result });
+        result = await dbReadCell('Admin', 'A', '15')
+        bot.sendMessage({ to: channelID, message: result });
     }
     if (args[1] == 'reset') {
         dbDeleteCol('Alliance', 2, 2);
