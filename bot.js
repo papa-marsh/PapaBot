@@ -8,13 +8,13 @@ logger.add(new logger.transports.Console, { colorize: true });
 logger.level = 'debug';
 var bot = new Discord.Client({ token: auth.token, autorun: true });
 }
-
+{
 var announceID = '619358591740018698';
 var consoleID = '622937431586373633';
 var testingID = '621375349334343690';
 var backupFlag = 0;
 var pause = 0;
-
+}
 bot.on('ready', function (evt) {
 logger.info(bot.username + ' - Connected.');
 (function(){ setInterval(async function() {
