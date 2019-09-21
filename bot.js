@@ -59,8 +59,30 @@ switch(args[0]) {
 
 case 'help':
 (async function(){
-    result = await dbReadCell('Admin', 'A', '8')
-    bot.sendMessage({ to: channelID, message: result });
+    if (!args[1]) {
+        result = await dbReadCell('Admin', 'A', '8')
+        bot.sendMessage({ to: channelID, message: result });
+    }
+    else if (args[1] == 'allies' || args[1] == 'plans') {
+        result = await dbReadCell('Admin', 'A', '11')
+        bot.sendMessage({ to: channelID, message: result });
+    }
+    else if (args[1] == 'members') {
+        result = await dbReadCell('Admin', 'A', '12')
+        bot.sendMessage({ to: channelID, message: result });
+    }
+    else if (args[1] == 'sectors') {
+        result = await dbReadCell('Admin', 'A', '13')
+        bot.sendMessage({ to: channelID, message: result });
+    }
+    else if (args[1] == 'bonus') {
+        result = await dbReadCell('Admin', 'A', '14')
+        bot.sendMessage({ to: channelID, message: result });
+    }
+    else if (args[1] == 'notes') {
+        result = await dbReadCell('Admin', 'A', '15')
+        bot.sendMessage({ to: channelID, message: result });
+    }
 })()
 break;
 
