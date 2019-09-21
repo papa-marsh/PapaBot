@@ -166,18 +166,30 @@ case 'bonus':
     if (args[1] == 'add') {
         var sector = message.split(' ')[2];
         var member = message.substring(sector.length + 12).toLowerCase();
-        var index = memberList.indexOf(member);
-        if (index != -1 && member) {
-            dbWriteCell('Alliance', 'B', index, sector);
+        var memberIndex = 0;
+        for (i=1; i<memberList.length; i++) {
+            if (memberList[i].indexOf(member) != -1) {
+                memberIndex = i;
+                member = memberList[i];
+            }
+        }
+        if (memberIndex) {
+            dbWriteCell('Alliance', 'B', memberIndex, sector);
             bot.sendMessage({ to: consoleID, message: member + '\'s bonus hero is now on sector ' + sector + '.' });
         }
         else bot.sendMessage({ to: channelID, message: 'Error: Couldn\'t find member: ' + member + '.' });
     }
     if (args[1] == 'remove') {
         var removal = message.substring(14);
-        var memberIndex = memberList.indexOf(removal);
         var heroIndex = heroList.indexOf(removal);
-        if (memberIndex != -1 && removal) {
+        var memberIndex = 0;
+        for (i=1; i<memberList.length; i++) {
+            if (memberList[i].indexOf(removal) != -1) {
+                memberIndex = i;
+                removal = memberList[i];
+            }
+        }
+        if (memberIndex && removal) {
             dbWriteCell('Alliance', 'B', memberIndex, '');
             bot.sendMessage({ to: consoleID, message: removal + '\'s bonus hero is now unused.' });
         }
