@@ -28,7 +28,7 @@ logger.info(bot.username + ' - Connected.');
         dbDeleteCol('Calendar', 2, 1);
     }
     else if (now == (eventTime - 50) && calEvent[5] == 'y') {
-        bot.sendMessage({ to: announceID, message: '@everyone - **5 minutes** until ' + calEvent[1] });
+        bot.sendMessage({ to: announceID, message: '@everyone - **10 minutes** until ' + calEvent[1] });
         dbWriteCell('Calendar', 'B', '5', 'n');
     }
     else if (now == (eventTime - 100) && calEvent[6] == 'y') {
@@ -50,6 +50,7 @@ logger.info(bot.username + ' - Connected.');
 }, 10000);})();});
 
 bot.on('message', function (user, userID, channelID, message, evt) {
+
 if (message.substring(0, 1) == '!' && bot.id != userID) {
 var args = message.substring(1).split(' ');
 
