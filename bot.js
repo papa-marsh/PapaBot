@@ -1,3 +1,4 @@
+{
 var Discord = require('discord.io');
 var Excel = require('exceljs');
 var logger = require('winston');
@@ -6,6 +7,7 @@ logger.remove(logger.transports.Console);
 logger.add(new logger.transports.Console, { colorize: true });
 logger.level = 'debug';
 var bot = new Discord.Client({ token: auth.token, autorun: true });
+}
 
 var announceID = '619358591740018698';
 var consoleID = '622937431586373633';
