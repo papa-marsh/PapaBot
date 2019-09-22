@@ -374,7 +374,7 @@ case 'channelid':
 break;
 
 case 'roast':
-    roastList = await dbReadCol('Roasts', 1);
+    roastList = await dbReadCol('Fun', 2);
     random = (Math.floor(Math.random() * 75) + 1);
     if (!args[1]) {
         bot.sendMessage({ to: channelID, message: 'Roast who?' });
@@ -383,7 +383,7 @@ case 'roast':
         bot.sendMessage({ to: channelID, message: roastList[random] });
     }
     else {
-        name = message.substring(7)
+        name = message.substring(7);
         bot.sendMessage({ to: channelID, message: name + ', ' + roastList[random] });
     }
 break;
@@ -399,7 +399,7 @@ case 'roll':
             bot.sendMessage({ to: channelID, message: 'Maximum roll = 250d100000' });
         }
         else {
-            var output = 'Roll ' + xd + 'd' + dx + ':\n';
+            var output = ':game_die: ' + xd + 'd' + dx + ' = ';
             var result = 0;
             for (i=xd; i>0; i--) {
                 random = (Math.floor(Math.random() * dx) + 1);
@@ -424,9 +424,22 @@ case 'flipacoin':
     bot.sendMessage({ to: channelID, message: output });
 break;
 
+case '8ball':
+    responseList = await dbReadCol('Fun', 3);
+    random = (Math.floor(Math.random() * 20) + 1);
+    if (!args[1]) {
+        bot.sendMessage({ to: channelID, message: 'What\'s your question?' });
+    }
+    else {
+        question = message.substring(7);
+        output = '**' + question + '**\nMagic Papa8Ball says...\n:8ball: ';
+        bot.sendMessage({ to: channelID, message: output + '*' + responseList[random] + '* :8ball:' });
+    }
+break;
+
 default:
     if (message.toLowerCase().indexOf('joke') != -1) {
-        jokeList = await dbReadCol('Jokes', 2);
+        jokeList = await dbReadCol('Fun', 1);
         random = ((Math.floor(Math.random() * 150) * 3) + 1);
         bot.sendMessage({ to: channelID, message: jokeList[random].substring(3) + '\n' + jokeList[random + 1].substring(3) });
     }
