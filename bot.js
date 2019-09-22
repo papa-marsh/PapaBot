@@ -58,16 +58,6 @@ logger.info(bot.username + ' - Connected.');
 
 }, 10000);})();});
 
-bot.on('guildMemberAdd', async function (callback) {
-    welcomeMessage = await dbReadCell('Admin', 'B', '8');
-    output = 'Welcome <@' + callback.id + '>.\n' + welcomeMessage;
-    bot.sendMessage({ to: generalID, message: output });
-});
-
-bot.on('guildMemberRemove', function (member) {
-    bot.sendMessage({ to: generalID, message: member.username + ' has left the server.' });
-});
-
 bot.on('message', function (user, userID, channelID, message, evt) {
 
 if (message.substring(0, 1) == '!' && bot.id != userID) {
@@ -473,6 +463,16 @@ default:
 break;
 
 }}}});
+
+bot.on('guildMemberAdd', async function (callback) {
+    welcomeMessage = await dbReadCell('Admin', 'B', '8');
+    output = 'Welcome <@' + callback.id + '>.\n' + welcomeMessage;
+    bot.sendMessage({ to: generalID, message: output });
+});
+
+bot.on('guildMemberRemove', function (member) {
+    bot.sendMessage({ to: generalID, message: member.username + ' has left the server.' });
+});
 
 async function dbWriteCell(sheet, col, row, val) {
     let workbook = new Excel.Workbook();
