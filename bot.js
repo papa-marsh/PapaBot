@@ -58,7 +58,7 @@ logger.info(bot.username + ' - Connected.');
 
 }, 10000);})();});
 
-bot.on('message', function (user, userID, channelID, message, evt) {
+bot.on('message', async function (user, userID, channelID, message, evt) {
 
 if (message.substring(0, 1) == '!' && bot.id != userID) {
 var args = message.substring(1).split(' ');
@@ -70,7 +70,6 @@ if (pause == 0) {
 switch(args[0]) {
 
 case 'help':
-(async function(){
     if (!args[1]) {
         result = await dbReadCell('Admin', 'A', '8')
         bot.sendMessage({ to: channelID, message: result });
@@ -95,11 +94,9 @@ case 'help':
         result = await dbReadCell('Admin', 'A', '15')
         bot.sendMessage({ to: channelID, message: result });
     }
-})()
 break;
 
 case 'allies':
-(async function(){
     if (!args[1]) {
         result = await dbReadCell('Admin', 'A', '2')
         bot.sendMessage({ to: channelID, message: result });
@@ -109,11 +106,9 @@ case 'allies':
         dbWriteCell('Admin', 'A', '2', val);
         bot.sendMessage({ to: consoleID, message: 'New allies message set.' });
     }
-})()
 break;
 
 case 'plans':
-(async function(){
     if (!args[1]) {
         result = await dbReadCell('Admin', 'A', '5')
         bot.sendMessage({ to: channelID, message: result });
@@ -123,11 +118,9 @@ case 'plans':
         dbWriteCell('Admin', 'A', '5', val);
         bot.sendMessage({ to: consoleID, message: 'New plans message set.' });
     }
-})()
 break;
 
-case 'members':
-(async function(){
+case 'members': case 'member':
     memberList = await dbReadCol('Alliance', 'A');
     if (!args[1]) {
         var memberCount = 0;
@@ -160,11 +153,9 @@ case 'members':
         }
         else bot.sendMessage({ to: channelID, message: 'Error: Couldn\'t find member: ' + memberRemove + '.' });
     }
-})()
 break;
 
 case 'bonus':
-(async function(){
     memberList = await dbReadCol('Alliance', 'A');
     heroList = await dbReadCol('Alliance', 'B');
     sectorList = await dbReadCol('Alliance', 'C');
@@ -235,11 +226,9 @@ case 'bonus':
             bot.sendMessage({ to: channelID, message: 'Error: Couldn\'t find ' + removal + ' in member/bonus hero lists.' });
         }
     }
-})()
 break;
 
-case 'sectors':
-(async function(){
+case 'sectors': case 'sector':
     sectorList = await dbReadCol('Alliance', 'C');
     if (!args[1]) {
         var sectorCount = sectorList[1] ? sectorList.length - 1 : 0;
@@ -268,11 +257,9 @@ case 'sectors':
         }
         else bot.sendMessage({ to: channelID, message: 'Couldn\'t find sector: ' + sectorRemove + '.' });
     }
-})()
 break;
 
 case 'calendar':
-(async function(){
     calendar = await dbReadRow('Calendar', 1);
     if (!args[1]) {
         var output = 'Stored Events:'
@@ -292,11 +279,9 @@ case 'calendar':
         dbDeleteCol('Calendar', removal, 1);
         bot.sendMessage({ to: consoleID, message: 'Removed event ' + removal });
     }
-})()
 break;
 
 case 'notes':
-(async function(){
     allianceList = await dbReadRow('Notes', 1);
     if (!args[1]) {
         bot.sendMessage({ to: channelID, message: 'Alliances with existing notes:\n' + allianceList.slice(1) });
@@ -359,11 +344,9 @@ case 'notes':
             bot.sendMessage({ to: channelID, message: 'Couldn\'t find ' + alliance + ' in notes.' });
         }
     }
-})()
 break;
 
 case 'admin':
-(async function(){
     if (!args[1]) {
         result = await dbReadCell('Admin', 'A', '11')
         bot.sendMessage({ to: channelID, message: result });
@@ -384,7 +367,6 @@ case 'admin':
         dbBackup();
         bot.sendMessage({ to: consoleID, message: 'Database backup created.' });
     }
-})()
 break;
 
 case 'channelid':
@@ -392,7 +374,6 @@ case 'channelid':
 break;
 
 case 'roast':
-(async function(){
     roastList = await dbReadCol('Roasts', 1);
     random = (Math.floor(Math.random() * 75) + 1);
     if (!args[1]) {
@@ -405,7 +386,6 @@ case 'roast':
         name = message.substring(7)
         bot.sendMessage({ to: channelID, message: name + ', ' + roastList[random] });
     }
-})()
 break;
 
 case 'roll':
@@ -445,7 +425,6 @@ case 'flipacoin':
 break;
 
 default:
-(async function(){
     if (message.toLowerCase().indexOf('joke') != -1) {
         jokeList = await dbReadCol('Jokes', 2);
         random = ((Math.floor(Math.random() * 150) * 3) + 1);
@@ -459,7 +438,6 @@ default:
         }
         bot.sendMessage({ to: channelID, message: output });
     }
-})();
 break;
 
 }}}});
