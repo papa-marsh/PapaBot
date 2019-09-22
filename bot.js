@@ -58,10 +58,14 @@ logger.info(bot.username + ' - Connected.');
 
 }, 10000);})();});
 
-bot.on('guildMemberAdd', async function(callback) {
-        welcomeMessage = await dbReadCell('Admin', 'B', '8');
-        output = 'Welcome <@' + callback.id + '>.\n' + welcomeMessage;
-        bot.sendMessage({ to: generalID, message: output });
+bot.on('guildMemberAdd', async function (callback) {
+    welcomeMessage = await dbReadCell('Admin', 'B', '8');
+    output = 'Welcome <@' + callback.id + '>.\n' + welcomeMessage;
+    bot.sendMessage({ to: generalID, message: output });
+});
+
+bot.on('guildMemberRemove', function (member) {
+    bot.sendMessage({ to: generalID, message: member.username + ' has left the server.' });
 });
 
 bot.on('message', function (user, userID, channelID, message, evt) {
