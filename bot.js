@@ -12,12 +12,16 @@ var bot = new Discord.Client({ token: auth.token, autorun: true });
 var announceID = '619358591740018698';
 var consoleID = '622937431586373633';
 var testingID = '621375349334343690';
+var generalID = '619514907825799189';
 var backupFlag = 0;
 var pause = 0;
 }
+
 bot.on('ready', function (evt) {
 logger.info(bot.username + ' - Connected.');
 (function(){ setInterval(async function() {
+
+{//Calendar
     var date = new Date();
     var now = parseInt((date.getMonth() + 1) + (date.getDate() < 10 ? "0" : "") + date.getDate()
         + (date.getHours() < 10 ? "0" : "") + date.getHours() + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes(), 10);
@@ -39,6 +43,9 @@ logger.info(bot.username + ' - Connected.');
         bot.sendMessage({ to: announceID, message: '**24 hours** until ' + calEvent[1] });
         dbWriteCell('Calendar', 'B', '7', 'n');
     }
+}
+
+{//Backup
     if (date.getHours() == 5 && !backupFlag) {
         dbBackup();
         backupFlag = 1;
@@ -47,7 +54,15 @@ logger.info(bot.username + ' - Connected.');
     if (date.getHours() == 6) {
         backupFlag = 0;
     }
+}
+
 }, 10000);})();});
+
+bot.on('guildMemberAdd', async function(callback) {
+        welcomeMessage = await dbReadCell('Admin', 'B', '8');
+        output = 'Welcome <@' + callback.id + '>.\n' + welcomeMessage;
+        bot.sendMessage({ to: generalID, message: output });
+});
 
 bot.on('message', function (user, userID, channelID, message, evt) {
 
@@ -462,7 +477,6 @@ async function dbWriteCell(sheet, col, row, val) {
     worksheet.getRow(row).getCell(col).value = val;
     workbook.xlsx.writeFile('db.xlsx');
 }
-
 async function dbWriteCol(sheet, col, vals) {
     let workbook = new Excel.Workbook();
     workbook = await workbook.xlsx.readFile('db.xlsx');
@@ -470,32 +484,27 @@ async function dbWriteCol(sheet, col, vals) {
     worksheet.getColumn(col).values = vals;
     workbook.xlsx.writeFile('db.xlsx');
 }
-
 async function dbReadWorksheet(sheet) {
     let workbook = new Excel.Workbook();
     workbook = await workbook.xlsx.readFile('db.xlsx');
     let worksheet = workbook.getWorksheet(sheet);
     return await worksheet;
 }
-
 async function dbReadCell(sheet, col, row) {
     worksheet = await dbReadWorksheet(sheet)
     var output = worksheet.getRow(row).getCell(col).value
     return await output;
 }
-
 async function dbReadCol(sheet, col) {
     worksheet = await dbReadWorksheet(sheet)
     var output = worksheet.getColumn(col).values
     return await output;
 }
-
 async function dbReadRow(sheet, row) {
     worksheet = await dbReadWorksheet(sheet)
     var output = worksheet.getRow(row).values
     return await output;
 }
-
 async function dbDeleteCol(sheet, col, len) {
     let workbook = new Excel.Workbook();
     workbook = await workbook.xlsx.readFile('db.xlsx');
@@ -503,7 +512,6 @@ async function dbDeleteCol(sheet, col, len) {
     worksheet1.spliceColumns(col, len);
     workbook.xlsx.writeFile('db.xlsx');
 }
-
 async function dbBackup() {
     let workbook = new Excel.Workbook();
     workbook = await workbook.xlsx.readFile('db.xlsx');
