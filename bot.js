@@ -132,7 +132,7 @@ case 'members': case 'member':
         bot.sendMessage({ to: channelID, message: memberCount + ' Members:\n' + memberList.slice(1) });
     }
     if (args[1] == 'add') {
-        var memberAdd = message.substring(13).toLowerCase();
+        var memberAdd = message.substring(message.indexOf(args[2])).toLowerCase();
         if (memberList.filter(String).length <25) {
             for (var i=1; i<26; i++){
                 if (!memberList[i]) {
@@ -145,7 +145,7 @@ case 'members': case 'member':
         else bot.sendMessage({ to: channelID, message: 'Error: Member list full.' });
     }
     if (args[1] == 'remove') {
-        var memberRemove = message.substring(16).toLowerCase();
+        var memberRemove = message.substring(message.indexOf(args[2])).toLowerCase();
         var removal = memberList.indexOf(memberRemove);
         if (removal != -1) {
             dbWriteCell('Alliance', 'A', removal, '');
@@ -163,6 +163,7 @@ case 'bonus':
         var output = '**These sectors need bonus heroes:**\n';
         var outputTemp1 = '';
         var outputTemp2 = '';
+        var outputTemp3 = '';
         for (var i=1; i<sectorList.length; i++) {
             if (heroList.indexOf(sectorList[i]) == -1) {
                 outputTemp1 = outputTemp1.concat(', ' + sectorList[i]);
@@ -170,22 +171,37 @@ case 'bonus':
         }
         for (var i=1; i<memberList.length; i++) {
             if (!heroList[i]) {
-                outputTemp2 = outputTemp2.concat(', ' + memberList[i])
+                outputTemp2 = outputTemp2.concat(', ' + memberList[i]);
+            }
+            if (sectorList.indexOf(heroList[i]) == -1 && outputTemp2.indexOf(memberList[i]) == -1) {
+                outputTemp3 = outputTemp3.concat(', ' + memberList[i]);
+                var noStarFlag = 1;
             }
         }
-        output = output.concat(outputTemp1.substring(2), '\n\n**These bonus heroes are available:**\n', outputTemp2.substring(2));
+        output = output.concat(outputTemp1.substring(2), '\n**These bonus heroes are available:**\n');
+        output = output.concat(outputTemp2.substring(2));
+        if (noStarFlag) {
+            output = output.concat('\n**These bonu heroes are on no-star sectors:\n**');
+            output = output.concat(outputTemp3.substring(2));
+        }
         bot.sendMessage({ to: channelID, message: output });
     }
     if (args[1] == 'list') {
         var output = '';
         for (var i=1; i-1<memberList.length; i++) {
             if (heroList[i]) {
-                output = output.concat('\nSector ' + heroList[i] + ' - ' + memberList[i]);
+                 if (sectorList.indexOf(heroList[i]) != -1) {
+                    output = output.concat('\nSector ' + heroList[i] + ' - ' + memberList[i]);
+                }
+                else {
+                    output = output.concat('\n**Sector ' + heroList[i] + ' - ' + memberList[i] + '**');
+                }
             }
             else if (memberList[i]) {
-                output = output.concat('\n------------ ' + memberList[i]);
+                output = output.concat('\n------------- ' + memberList[i]);
             }
         }
+        output = output.concat('\n**Bold text = no-star sector.**');
         bot.sendMessage({ to: channelID, message: output });
     }
     if (args[1] == 'add') {
@@ -235,7 +251,7 @@ case 'sectors': case 'sector':
         bot.sendMessage({ to: channelID, message: sectorCount + ' Bonus Sectors:\n' + sectorList.slice(1) });
     }
     if (args[1] == 'add') {
-        var sectorAdd = message.substring(13).split(',');
+        var sectorAdd = message.substring(message.indexOf(args[2])).split(',');
         var output = 'Added bonus sector(s):'
         for (var j=0; j<sectorAdd.length; j++) {
             sectorList[sectorList.length] = sectorAdd[j];
