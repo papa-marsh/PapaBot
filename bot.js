@@ -56,6 +56,10 @@ logger.info(bot.username + ' - Connected.');
     }
 }
 
+{//Activity
+
+}
+
 }, 10000);})();});
 
 bot.on('message', async function (user, userID, channelID, message, evt) {
@@ -383,10 +387,6 @@ case 'admin':
         dbBackup();
         bot.sendMessage({ to: consoleID, message: 'Database backup created.' });
     }
-break;
-
-case 'channelid':
-    bot.sendMessage({ to: channelID, message: channelID });
 break;
 
 case 'roast':
