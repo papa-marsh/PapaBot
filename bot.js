@@ -366,6 +366,18 @@ case 'notes':
     }
 break;
 
+case 'stats':
+    userIDList = await dbReadCol('Discord', 'A');
+    usernameList = await dbReadCol('Discord', 'B');
+    if (!args[1]) {
+        //for (i=1; i<userIDList.length; i++) {
+            console.log(bot.getUser(bot.id));
+            //user = bot.getMember(userIDList[i]);
+            //console.log(user.username);
+        //}
+    }
+break;
+
 case 'admin':
     if (!args[1]) {
         result = await dbReadCell('Admin', 'A', '11')
