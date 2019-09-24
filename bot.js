@@ -19,6 +19,7 @@ var pause = 0;
 
 bot.on('ready', function (evt) {
 logger.info(bot.username + ' - Connected.');
+var server = bot.servers['535475301866537010'];
 (function(){ setInterval(async function() {
 
 {//Calendar
@@ -56,21 +57,33 @@ logger.info(bot.username + ' - Connected.');
     }
 }
 
-{//Activity
+/*{//Activity
+    userIDList = await dbReadCol('Discord', 'A');
+    usernameList = await dbReadCol('Discord', 'B');
 
-}
+    var xyz = ((bot.users[userIDList[1]] / 4194304) + 1420070400000)
+    date = new Date(xyz).toUTCString();
+    console.log(date);
+    for (i in userIDList) {
+        user = bot.users[i].status;
+        date = new Date((user / 4194304) + 1420070400000)
+        console.log(date.toUTCString());
+        //console.log(server.members[userIDList[i]]);
+    }
+}*/
 
 }, 10000);})();});
 
 bot.on('message', async function (user, userID, channelID, message, evt) {
 
+server = bot.servers['535475301866537010'];
 if (message.substring(0, 1) == '!' && bot.id != userID) {
 var args = message.substring(1).split(' ');
 
 if (args[0] == 'pause') { pause = 1; }
 else if (args[0] == 'unpause') { pause = 0; }
-
 if (pause == 0) {
+
 switch(args[0]) {
 
 case 'help':
@@ -366,16 +379,8 @@ case 'notes':
     }
 break;
 
-case 'stats':
-    userIDList = await dbReadCol('Discord', 'A');
-    usernameList = await dbReadCol('Discord', 'B');
-    if (!args[1]) {
-        //for (i=1; i<userIDList.length; i++) {
-            console.log(bot.getUser(bot.id));
-            //user = bot.getMember(userIDList[i]);
-            //console.log(user.username);
-        //}
-    }
+case 'status':
+
 break;
 
 case 'admin':
@@ -491,6 +496,10 @@ bot.on('guildMemberAdd', async function (callback) {
 
 bot.on('guildMemberRemove', function (member) {
     bot.sendMessage({ to: generalID, message: member.username + ' has left the server.' });
+});
+
+bot.on('disconnect', function(errMsg, code) {
+    bot.sendMessage({ to: consoleID, message: 'PapaBot disconnected\nError Code:' + errMsg + '\n<@467426493912317953>' });
 });
 
 async function dbWriteCell(sheet, col, row, val) {
