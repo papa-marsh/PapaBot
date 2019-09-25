@@ -22,13 +22,13 @@ bot.on('ready', function (evt) {
 logger.info(bot.username + ' - Connected.');
 var server = bot.servers['535475301866537010'];
 (function(){ setInterval(async function() {
-{//DB Reads
+{//Variable Sets
 userIDList = await dbReadCol('Discord', 'A');
 lastOnlineList = await dbReadCol('Discord', 'C');
+var date = new Date();
 }
 
 {//Calendar
-    var date = new Date();
     var now = parseInt((date.getMonth() + 1) + (date.getDate() < 10 ? "0" : "") + date.getDate()
         + (date.getHours() < 10 ? "0" : "") + date.getHours() + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes(), 10);
     var calEvent = await dbReadCol('Calendar', 2);
@@ -74,8 +74,8 @@ lastOnlineList = await dbReadCol('Discord', 'C');
     for (i in userIDList) {
         member = server.members[userIDList[i]];
         if (member.status == 'online') {
-            joinDate = new Date(server.members[userIDList[i]].joined_at);
-            lastOnlineList[i] = (joinDate.toUTCString().substring(5));
+            //joinDate = new Date(server.members[userIDList[i]].joined_at);
+            lastOnlineList[i] = (date.toUTCString().substring(5));
         }
     }
     dbWriteCol('Discord', 'C', lastOnlineList);
@@ -445,15 +445,28 @@ break;
 case 'status':
     usernameList = await dbReadCol('Discord', 'B');
     lastOnlineList = await dbReadCol('Discord', 'C');
-    var output = 'Server Member Status:';
-    for (i=1; i<usernameList.length; i++) {
-        lastOnline = lastOnlineList[i];
-        if (lastOnline) {
-            lastOnline = lastOnline.slice(0, -7);
+    if (!args[1]) {
+        var output = '';
+        for (i=1; i<usernameList.length; i++) {
+            lastOnline = lastOnlineList[i];
+            if (lastOnline) {
+                lastOnline = lastOnline.slice(0, -7);
+            }
+            output = output.concat('\n' + usernameList[i] + ' - Last Online: ' + lastOnline);
         }
-        output = output.concat('\n' + usernameList[i] + ' - Last Online: ' + lastOnline);
-    }
-    bot.sendMessage({ to: channelID, message: output });
+        bot.sendMessage({ to: channelID, message: output });
+    }/*
+    else {
+        var member = args[1].toLowerCase();
+        var memberIndex = 0;
+        for (i=1; i<memberList.length; i++) {
+            if (memberList[i].indexOf(member) != -1) {
+                memberIndex = i;
+                member = memberList[i];
+            }
+        }
+    }*/
+
 break;
 
 case 'admin':
