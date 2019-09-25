@@ -15,6 +15,7 @@ var testingID = '621375349334343690';
 var generalID = '619514907825799189';
 var backupFlag01 = 0;
 var backupFlag24 = 0;
+var pause = 0;
 }
 
 bot.on('ready', function (evt) {
@@ -442,17 +443,17 @@ case 'notes':
 break;
 
 case 'status':
-    userIDList = await dbReadCol('Discord', 'A');
     usernameList = await dbReadCol('Discord', 'B');
     lastOnlineList = await dbReadCol('Discord', 'C');
-
-    for (i in userIDList) {
-        member = server.members[userIDList[i]];
-        if (member.status == 'online') {
-            joinDate = new Date(server.members[userIDList[i]].joined_at);
-            console.log(joinDate.toUTCString().substring(5));
+    var output = 'Server Member Status:';
+    for (i=1; i<usernameList.length; i++) {
+        lastOnline = lastOnlineList[i];
+        if (lastOnline) {
+            lastOnline = lastOnline.slice(0, -7);
         }
+        output = output.concat('\n' + usernameList[i] + ' - Last Online: ' + lastOnline);
     }
+    bot.sendMessage({ to: channelID, message: output });
 break;
 
 case 'admin':
