@@ -13,7 +13,8 @@ var announceID = '619358591740018698';
 var consoleID = '622937431586373633';
 var testingID = '621375349334343690';
 var generalID = '619514907825799189';
-var backupFlag = 0;
+var backupFlag24 = 0;
+var backupFlag01 = 0;
 var pause = 0;
 }
 
@@ -52,13 +53,21 @@ lastOnlineList = await dbReadCol('Discord', 'C');
 }
 
 {//Backup
-    if (date.getHours() == 5 && !backupFlag) {
-        dbBackup();
-        backupFlag = 1;
+    if (date.getHours() == 5 && !backupFlag24) {
+        dbBackup('db_BACKUP_24.xlsx');
+        backupFlag24 = 1;
         bot.sendMessage({ to: consoleID, message: 'Database backup created.' });
     }
     if (date.getHours() == 6) {
-        backupFlag = 0;
+        backupFlag24 = 0;
+    }
+    if (date.getMinutes() == 0 && !backupFlag01) {
+        dbBackup('db_BACKUP_01.xlsx');
+        backupFlag01 = 1;
+        bot.sendMessage({ to: consoleID, message: 'test' });
+    }
+    if (date.getMinutes() == 1) {
+        backupFlag01 = 0;
     }
 }
 /*
@@ -594,7 +603,7 @@ async function dbDeleteCol(sheet, col, len) {
     workbook.xlsx.writeFile('db.xlsx');
 }
 async function dbBackup() {
-    let workbook = new Excel.Workbook();
+    let workbook = new Excel.Workbook(file);
     workbook = await workbook.xlsx.readFile('db.xlsx');
-    workbook.xlsx.writeFile('db_BACKUP.xlsx');
+    workbook.xlsx.writeFile(file);
 }
