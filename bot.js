@@ -21,6 +21,11 @@ bot.on('ready', function (evt) {
 logger.info(bot.username + ' - Connected.');
 var server = bot.servers['535475301866537010'];
 (function(){ setInterval(async function() {
+{//DB Reads
+userIDList = await dbReadCol('Discord', 'A');
+usernameList = await dbReadCol('Discord', 'B');
+lastOnlineList = await dbReadCol('Discord', 'C');
+}
 
 {//Calendar
     var date = new Date();
@@ -56,6 +61,40 @@ var server = bot.servers['535475301866537010'];
         backupFlag = 0;
     }
 }
+/*
+{//Member List
+    for (i=1; i<userIDList.length; i++) {
+        if (!usernameList[i]) {
+            usernameList.length++;
+            usernameList[i] = bot.users[userIDList[i]].username;
+            console.log('.');
+        }
+    }
+    console.log(usernameList);
+    var addMessage = 'Added user to database: ';
+    var addFlag = 0;
+    for (id in bot.users) {
+        if(userIDList.indexOf(id) == -1) {
+            addFlag = 1;
+            userIDList.push(id);
+            memberUsername = server.members[id]
+            addMessage = addMessage.concat('\n' + id + ': ' + bot.users[id].username);
+        }
+    }
+    dbWriteCol('Discord', 'A', userIDList);
+    bot.sendMessage({ to: testingID, message: addMessage });
+}
+*/
+{//Last Online
+    for (i in userIDList) {
+        member = server.members[userIDList[i]];
+        if (member.status == 'online') {
+            joinDate = new Date(server.members[userIDList[i]].joined_at);
+            lastOnlineList[i] = (joinDate.toUTCString().substring(5));
+        }
+    }
+    dbWriteCol('Discord', 'C', lastOnlineList);
+}
 
 /*{//Activity
     userIDList = await dbReadCol('Discord', 'A');
@@ -68,7 +107,7 @@ var server = bot.servers['535475301866537010'];
         user = bot.users[i].status;
         date = new Date((user / 4194304) + 1420070400000)
         console.log(date.toUTCString());
-        //console.log(server.members[userIDList[i]]);
+        console.log(server.members[userIDList[i]]);
     }
 }*/
 
@@ -380,7 +419,17 @@ case 'notes':
 break;
 
 case 'status':
+    userIDList = await dbReadCol('Discord', 'A');
+    usernameList = await dbReadCol('Discord', 'B');
+    lastOnlineList = await dbReadCol('Discord', 'C');
 
+    for (i in userIDList) {
+        member = server.members[userIDList[i]];
+        if (member.status == 'online') {
+            joinDate = new Date(server.members[userIDList[i]].joined_at);
+            console.log(joinDate.toUTCString().substring(5));
+        }
+    }
 break;
 
 case 'admin':
