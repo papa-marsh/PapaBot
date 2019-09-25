@@ -13,9 +13,8 @@ var announceID = '619358591740018698';
 var consoleID = '622937431586373633';
 var testingID = '621375349334343690';
 var generalID = '619514907825799189';
-var backupFlag24 = 0;
 var backupFlag01 = 0;
-var pause = 0;
+var backupFlag24 = 0;
 }
 
 bot.on('ready', function (evt) {
@@ -24,7 +23,6 @@ var server = bot.servers['535475301866537010'];
 (function(){ setInterval(async function() {
 {//DB Reads
 userIDList = await dbReadCol('Discord', 'A');
-usernameList = await dbReadCol('Discord', 'B');
 lastOnlineList = await dbReadCol('Discord', 'C');
 }
 
@@ -70,30 +68,7 @@ lastOnlineList = await dbReadCol('Discord', 'C');
         backupFlag01 = 0;
     }
 }
-/*
-{//Member List
-    for (i=1; i<userIDList.length; i++) {
-        if (!usernameList[i]) {
-            usernameList.length++;
-            usernameList[i] = bot.users[userIDList[i]].username;
-            console.log('.');
-        }
-    }
-    console.log(usernameList);
-    var addMessage = 'Added user to database: ';
-    var addFlag = 0;
-    for (id in bot.users) {
-        if(userIDList.indexOf(id) == -1) {
-            addFlag = 1;
-            userIDList.push(id);
-            memberUsername = server.members[id]
-            addMessage = addMessage.concat('\n' + id + ': ' + bot.users[id].username);
-        }
-    }
-    dbWriteCol('Discord', 'A', userIDList);
-    bot.sendMessage({ to: testingID, message: addMessage });
-}
-*/
+
 {//Last Online
     for (i in userIDList) {
         member = server.members[userIDList[i]];
@@ -120,7 +95,46 @@ lastOnlineList = await dbReadCol('Discord', 'C');
     }
 }*/
 
-}, 10000);})();});
+}, 5000);})();
+
+(function(){ setInterval(async function() {
+{//DB Reads
+userIDList = await dbReadCol('Discord', 'A');
+usernameList = await dbReadCol('Discord', 'B');
+}
+
+{//Member List
+    var usernameFlag = 0;
+    var addFlag = 0;
+    for (i=1; i<userIDList.length; i++) {
+        if (!usernameList[i]) {
+            usernameFlag = 1;
+            usernameList.length++;
+            usernameList[i] = bot.users[userIDList[i]].username;
+        }
+    }
+    if (usernameFlag) {
+        dbWriteCol('Discord', 'B', usernameList);
+        bot.sendMessage({ to: consoleID, message: 'New UserID found - username added.' });
+    }
+    var addMessage = 'Added user to database ';
+    for (id in bot.users) {
+        if(userIDList.indexOf(id) == -1) {
+            addFlag = 1;
+            userIDList.push(id);
+            memberUsername = server.members[id]
+            addMessage = addMessage.concat('\n' + id + ': ' + bot.users[id].username);
+        }
+    }
+    if (addFlag) {
+        dbWriteCol('Discord', 'A', userIDList);
+        bot.sendMessage({ to: consoleID, message: addMessage });
+    }
+}
+
+}, 60000);})();
+
+});
 
 bot.on('message', async function (user, userID, channelID, message, evt) {
 
