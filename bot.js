@@ -73,27 +73,11 @@ var date = new Date();
     for (i in userIDList) {
         member = server.members[userIDList[i]];
         if (member.status == 'online') {
-            //joinDate = new Date(server.members[userIDList[i]].joined_at);
             lastOnlineList[i] = (date.toUTCString().substring(5));
         }
     }
     dbWriteCol('Discord', 'C', lastOnlineList);
 }
-
-/*{//Activity
-    userIDList = await dbReadCol('Discord', 'A');
-    usernameList = await dbReadCol('Discord', 'B');
-
-    var xyz = ((bot.users[userIDList[1]] / 4194304) + 1420070400000)
-    date = new Date(xyz).toUTCString();
-    console.log(date);
-    for (i in userIDList) {
-        user = bot.users[i].status;
-        date = new Date((user / 4194304) + 1420070400000)
-        console.log(date.toUTCString());
-        console.log(server.members[userIDList[i]]);
-    }
-}*/
 
 }, 5000);})();
 
