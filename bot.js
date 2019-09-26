@@ -79,7 +79,7 @@ var date = new Date();
     dbWriteCol('Discord', 'C', lastOnlineList);
 }
 
-}, 5000);})();
+}, 20000);})();
 
 (function(){ setInterval(async function() {
 {//Init
@@ -116,7 +116,7 @@ usernameList = await dbReadCol('Discord', 'B');
     }
 }
 
-}, 60000);})();
+}, 45000);})();
 
 });
 
@@ -363,7 +363,9 @@ break;
 case 'notes':
     allianceList = await dbReadRow('Notes', 1);
     if (!args[1]) {
-        bot.sendMessage({ to: channelID, message: 'Alliances with existing notes:\n' + allianceList.slice(1) });
+        output = 'Alliances with existing notes:\n' + allianceList.slice(1);
+        output = output.concat('\nType _!notes <tag>_ to see that alliance\'s notes' );
+        bot.sendMessage({ to: channelID, message: output });
     }
     else {
         alliance = args[1].toUpperCase();
@@ -380,7 +382,6 @@ case 'notes':
                 for (i=2; i<notes.length; i++) {
                     output = output.concat('\n - ' + notes[i]);
                 }
-                output = output.concat('\nType _!notes <tag>_ to see that alliance\'s notes' );
                 bot.sendMessage({ to: channelID, message: output });
             }
             else if (args[2] == 'add') {
@@ -412,7 +413,7 @@ case 'notes':
         }
         else if (args[2] == 'create') {
             if (notesIndex == -1) {
-                dbWriteCell('Notes', allianceList.length, 1, alliance);
+                dbWriteCell('Notes', allianceList.length + 1, 1, alliance);
                 bot.sendMessage({ to: consoleID, message: 'Added ' + alliance + ' to note categories.' });
             }
             else {
