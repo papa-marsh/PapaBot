@@ -589,7 +589,7 @@ bot.on('guildMemberRemove', function (member) {
 });
 
 bot.on('disconnect', function(errMsg, code) {
-    bot.sendMessage({ to: consoleID, message: 'PapaBot disconnected\nError Code:' + errMsg + '\n<@467426493912317953>' });
+    bot.sendMessage({ to: consoleID, message: 'PapaBot disconnected\nError Code: ' + errMsg + '\n<@467426493912317953>' });
 });
 
 async function dbWriteCell(sheet, col, row, val) {
