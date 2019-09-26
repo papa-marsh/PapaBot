@@ -455,17 +455,22 @@ case 'status':
             output = output.concat('\n' + usernameList[i] + ' - Last Online: ' + lastOnline);
         }
         bot.sendMessage({ to: channelID, message: output });
-    }/*
+    }
     else {
         var member = args[1].toLowerCase();
         var memberIndex = 0;
-        for (i=1; i<memberList.length; i++) {
-            if (memberList[i].indexOf(member) != -1) {
-                memberIndex = i;
-                member = memberList[i];
+        for (i=1; i<usernameList.length; i++) {
+            if (usernameList[i].toLowerCase().indexOf(member) != -1) {
+                output = usernameList[i] + ' - Last Online: ' + lastOnlineList[i];
             }
         }
-    }*/
+        if (output) {
+            bot.sendMessage({ to: channelID, message: output });
+        }
+        else {
+            bot.sendMessage({ to: channelID, message: 'Couldn\'t find user: ' + member });
+        }
+    }
 
 break;
 
