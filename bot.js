@@ -63,7 +63,6 @@ var date = new Date();
     if (date.getMinutes() == 0 && !backupFlag01) {
         dbBackup('db_BACKUP_01.xlsx');
         backupFlag01 = 1;
-        bot.sendMessage({ to: consoleID, message: 'test' });
     }
     if (date.getMinutes() == 1) {
         backupFlag01 = 0;
