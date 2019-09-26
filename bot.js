@@ -22,7 +22,7 @@ bot.on('ready', function (evt) {
 logger.info(bot.username + ' - Connected.');
 var server = bot.servers['535475301866537010'];
 (function(){ setInterval(async function() {
-{//Variable Sets
+{//Init
 userIDList = await dbReadCol('Discord', 'A');
 lastOnlineList = await dbReadCol('Discord', 'C');
 var date = new Date();
@@ -99,7 +99,7 @@ var date = new Date();
 }, 5000);})();
 
 (function(){ setInterval(async function() {
-{//DB Reads
+{//Init
 userIDList = await dbReadCol('Discord', 'A');
 usernameList = await dbReadCol('Discord', 'B');
 }
@@ -487,7 +487,7 @@ case 'admin':
         bot.sendMessage({ to: consoleID, message: 'Bonus sector list and hero placement cleared.' });
     }
     if (args[1] == 'backup') {
-        dbBackup();
+        dbBackup('db_MANUAL.xlsx');
         bot.sendMessage({ to: consoleID, message: 'Database backup created.' });
     }
 break;
@@ -630,8 +630,8 @@ async function dbDeleteCol(sheet, col, len) {
     worksheet1.spliceColumns(col, len);
     workbook.xlsx.writeFile('db.xlsx');
 }
-async function dbBackup() {
-    let workbook = new Excel.Workbook(file);
+async function dbBackup(file) {
+    let workbook = new Excel.Workbook();
     workbook = await workbook.xlsx.readFile('db.xlsx');
     workbook.xlsx.writeFile(file);
 }
