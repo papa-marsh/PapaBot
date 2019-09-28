@@ -21,7 +21,9 @@ var pause = 0;
 bot.on('ready', function (evt) {
 logger.info(bot.username + ' - Connected.');
 var server = bot.servers['535475301866537010'];
+var pingpong = 0;
 (function(){ setInterval(async function() {
+if (!pingpong) { pingpong = 1
 {//Init
 userIDList = await dbReadCol('Discord', 'A');
 lastOnlineList = await dbReadCol('Discord', 'C');
@@ -81,9 +83,10 @@ var date = new Date();
     dbWriteCol('Discord', 'C', lastOnlineList);
 }
 
-}, 20000);})();
+}}, 10000);})();
 
 (function(){ setInterval(async function() {
+if (pingpong) { pingpong = 0
 {//Init
 userIDList = await dbReadCol('Discord', 'A');
 usernameList = await dbReadCol('Discord', 'B');
@@ -118,7 +121,7 @@ usernameList = await dbReadCol('Discord', 'B');
     }
 }
 
-}, 45000);})();
+}}, 10000);})();
 
 });
 
