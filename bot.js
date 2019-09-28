@@ -13,6 +13,7 @@ var announceID = '619358591740018698';
 var consoleID = '622937431586373633';
 var testingID = '621375349334343690';
 var generalID = '619514907825799189';
+var pingpong = 0;
 var backupFlag01 = 0;
 var backupFlag24 = 0;
 var pause = 0;
@@ -21,16 +22,18 @@ var pause = 0;
 bot.on('ready', function (evt) {
 logger.info(bot.username + ' - Connected.');
 var server = bot.servers['535475301866537010'];
-var pingpong = 0;
 (function(){ setInterval(async function() {
-if (!pingpong) { pingpong = 1
 {//Init
+pingpong == 5 ? pingpong = 1 : pingpong++;
 userIDList = await dbReadCol('Discord', 'A');
+usernameList = await dbReadCol('Discord', 'B');
 lastOnlineList = await dbReadCol('Discord', 'C');
 var date = new Date();
 }
 
-{//Calendar
+switch(pingpong) {
+
+case 1: //Calendar
     var now = parseInt((date.getMonth() + 1) + (date.getDate() < 10 ? "0" : "") + date.getDate()
         + (date.getHours() < 10 ? "0" : "") + date.getHours() + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes(), 10);
     var calEvent = await dbReadCol('Calendar', 2);
@@ -53,9 +56,9 @@ var date = new Date();
             dbWriteCell('Calendar', 'B', '7', 'n');
         }
     }
-}
+break;
 
-{//Backup
+case 2: //Backup
     if (date.getHours() == 5 && !backupFlag24) {
         dbBackup('db_BACKUP_24.xlsx');
         backupFlag24 = 1;
@@ -71,9 +74,9 @@ var date = new Date();
     if (date.getMinutes() == 1) {
         backupFlag01 = 0;
     }
-}
+break;
 
-{//Last Online
+case 3: //Last Online
     for (i in userIDList) {
         member = server.members[userIDList[i]];
         if (member.status == 'online') {
@@ -81,18 +84,9 @@ var date = new Date();
         }
     }
     dbWriteCol('Discord', 'C', lastOnlineList);
-}
+break;
 
-}}, 10000);})();
-
-(function(){ setInterval(async function() {
-if (pingpong) { pingpong = 0
-{//Init
-userIDList = await dbReadCol('Discord', 'A');
-usernameList = await dbReadCol('Discord', 'B');
-}
-
-{//Member List
+case 4: //Member List
     var usernameFlag = 0;
     var addFlag = 0;
     for (i=1; i<userIDList.length; i++) {
@@ -119,20 +113,20 @@ usernameList = await dbReadCol('Discord', 'B');
         dbWriteCol('Discord', 'A', userIDList);
         bot.sendMessage({ to: consoleID, message: addMessage });
     }
-}
+pingpong = 0;
+break;
 
-}}, 10000);})();
-
-});
+}}, 5000);})();});
 
 bot.on('message', async function (user, userID, channelID, message, evt) {
-
-server = bot.servers['535475301866537010'];
 if (message.substring(0, 1) == '!' && bot.id != userID) {
+{//Init
 var args = message.substring(1).split(' ');
-
+var server = bot.servers['535475301866537010'];
 if (args[0] == 'pause') { pause = 1; }
 else if (args[0] == 'unpause') { pause = 0; }
+}
+
 if (pause == 0) {
 
 switch(args[0]) {
@@ -436,6 +430,16 @@ case 'status':
     lastOnlineList = await dbReadCol('Discord', 'C');
     if (!args[1]) {
         var output = '';
+
+
+        for (i=1; i<usernameList.length; i++)
+
+
+        bot.sendMessage({ to: channelID, message: output });
+    }
+    /*
+    if (!args[1]) {
+        var output = '';
         for (i=1; i<usernameList.length; i++) {
             lastOnline = lastOnlineList[i];
             if (lastOnline) {
@@ -444,7 +448,7 @@ case 'status':
             output = output.concat('\n' + usernameList[i] + ' - Last Online: ' + lastOnline);
         }
         bot.sendMessage({ to: channelID, message: output });
-    }
+    }*/
     else {
         var member = args[1].toLowerCase();
         var memberIndex = 0;
