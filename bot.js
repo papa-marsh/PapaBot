@@ -432,7 +432,14 @@ case 'status':
         var output = '';
 
 
-        for (i=1; i<usernameList.length; i++)
+        for (i=1; i<usernameList.length; i++) {
+            username = usernameList[i];
+            lastOnline = lastOnlineList[i];
+
+            for (j=i+1; j<usernameList.length; j++) {
+                if
+            }
+        }
 
 
         bot.sendMessage({ to: channelID, message: output });
@@ -583,7 +590,7 @@ bot.on('guildMemberRemove', function (member) {
 });
 
 bot.on('disconnect', function(errMsg, code) {
-    bot.sendMessage({ to: consoleID, message: 'PapaBot disconnected\nError Code: ' + errMsg + '\n<@467426493912317953>' });
+    bot.sendMessage({ to: consoleID, message: 'PapaBot disconnected. Error Code: ' + errMsg });
 });
 
 async function dbWriteCell(sheet, col, row, val) {
