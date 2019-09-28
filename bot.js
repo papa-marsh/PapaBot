@@ -32,22 +32,24 @@ var date = new Date();
     var now = parseInt((date.getMonth() + 1) + (date.getDate() < 10 ? "0" : "") + date.getDate()
         + (date.getHours() < 10 ? "0" : "") + date.getHours() + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes(), 10);
     var calEvent = await dbReadCol('Calendar', 2);
-    var eventTime = 100 * parseInt(calEvent[2] + (calEvent[3] < 10 ? "0" : "") + calEvent[3]
-        + (calEvent[4] < 10 ? "0" : "") + calEvent[4] + (calEvent[5] < 10 ? "0" : "") + calEvent[5] + '00', 10);
-    if (now > eventTime) {
-        dbDeleteCol('Calendar', 2, 1);
-    }
-    else if (now == (eventTime - 50) && calEvent[5] == 'y') {
-        bot.sendMessage({ to: announceID, message: '@everyone - **10 minutes** until ' + calEvent[1] });
-        dbWriteCell('Calendar', 'B', '5', 'n');
-    }
-    else if (now == (eventTime - 100) && calEvent[6] == 'y') {
-        bot.sendMessage({ to: announceID, message: '**1 hour** until ' + calEvent[1] });
-        dbWriteCell('Calendar', 'B', '6', 'n');
-    }
-    else if (now == (eventTime - 10000) && calEvent[7] == 'y') {
-        bot.sendMessage({ to: announceID, message: '**24 hours** until ' + calEvent[1] });
-        dbWriteCell('Calendar', 'B', '7', 'n');
+    if (calEvent[1]) {
+        var eventTime = 100 * parseInt(calEvent[2] + (calEvent[3] < 10 ? "0" : "") + calEvent[3]
+            + (calEvent[4] < 10 ? "0" : "") + calEvent[4] + (calEvent[5] < 10 ? "0" : "") + calEvent[5] + '00', 10);
+        if (now > eventTime) {
+            dbDeleteCol('Calendar', 2, 1);
+        }
+        else if (now == (eventTime - 50) && calEvent[5] == 'y') {
+            bot.sendMessage({ to: announceID, message: '@everyone - **10 minutes** until ' + calEvent[1] });
+            dbWriteCell('Calendar', 'B', '5', 'n');
+        }
+        else if (now == (eventTime - 100) && calEvent[6] == 'y') {
+            bot.sendMessage({ to: announceID, message: '**1 hour** until ' + calEvent[1] });
+            dbWriteCell('Calendar', 'B', '6', 'n');
+        }
+        else if (now == (eventTime - 10000) && calEvent[7] == 'y') {
+            bot.sendMessage({ to: announceID, message: '**24 hours** until ' + calEvent[1] });
+            dbWriteCell('Calendar', 'B', '7', 'n');
+        }
     }
 }
 
