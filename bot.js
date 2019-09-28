@@ -430,23 +430,6 @@ case 'status':
     lastOnlineList = await dbReadCol('Discord', 'C');
     if (!args[1]) {
         var output = '';
-
-
-        for (i=1; i<usernameList.length; i++) {
-            username = usernameList[i];
-            lastOnline = lastOnlineList[i];
-
-            for (j=i+1; j<usernameList.length; j++) {
-                if
-            }
-        }
-
-
-        bot.sendMessage({ to: channelID, message: output });
-    }
-    /*
-    if (!args[1]) {
-        var output = '';
         for (i=1; i<usernameList.length; i++) {
             lastOnline = lastOnlineList[i];
             if (lastOnline) {
@@ -455,7 +438,7 @@ case 'status':
             output = output.concat('\n' + usernameList[i] + ' - Last Online: ' + lastOnline);
         }
         bot.sendMessage({ to: channelID, message: output });
-    }*/
+    }
     else {
         var member = args[1].toLowerCase();
         var memberIndex = 0;
