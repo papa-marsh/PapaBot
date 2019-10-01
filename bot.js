@@ -350,12 +350,44 @@ case 'calendar':
         bot.sendMessage({ to: channelID, message: output });
     }
     if (args[1] == 'add') {
-        bot.sendMessage({ to: consoleID, message: 'Can\'t do this yet, sorry.' });
+        var alertValidation = (args[5] == 'y' || args[5] == 'n') && (args[6] == 'y' || args[6] == 'n') && (args[7] == 'y' || args[7] == 'n');
+        if (args[2] <= 12 && args[3] <= 31 && args[4] <= 23 && alertValidation && args[8]) {
+            var eventName = message.substring(message.indexOf(args[8]));
+            var addEvent = [eventName, args[2], args[3], args[4], args[5], args[6], args[7]];
+            var addDate = args[2] + '/' + args[3];
+            if (args[4] == 0) {
+                var addTime = '12:00 AM';
+            }
+            else if (args[4] == 12) {
+                var addTime = '12:00 PM';
+            }
+            else if (args[4] > 12) {
+                var addTime = args[4] - 12 + ':00 PM';
+            }
+            else {
+                var addTime = args[4] + ':00 AM';
+            }
+            var addAlerts = '';
+            addAlerts = args[5] == 'y' ? addAlerts.concat('\n10 minute alert: ON') : addAlerts.concat('\n10 minute alert: OFF');
+            addAlerts = args[6] == 'y' ? addAlerts.concat('\n1 hour alert: ON') : addAlerts.concat('\n1 hour alert: OFF');
+            addAlerts = args[7] == 'y' ? addAlerts.concat('\n1 day alert: ON') : addAlerts.concat('\n1 day alert: OFF');
+            dbWriteCol('Calendar', calendar.length, addEvent);
+            output = 'Added calendar event: ' + eventName + '\n' + addDate + ' at ' + addTime + addAlerts;
+            bot.sendMessage({ to: consoleID, message: output });
+        }
+        else {
+            bot.sendMessage({ to: channelID, message: 'Syntax:\n*!calendar add mm dd hh 10m 1h 1d event name* (alerts are y/n)' });
+        }
     }
     if (args[1] == 'remove') {
-        var removal = args[2] + 1;
-        dbDeleteCol('Calendar', removal, 1);
-        bot.sendMessage({ to: consoleID, message: 'Removed event ' + removal });
+        if (args[2] != 0) {
+            var removal = parseInt(args[2]) + 1;
+            dbDeleteCol('Calendar', removal, 1);
+            bot.sendMessage({ to: consoleID, message: 'Removed calendar event ' + removal });
+        }
+        else {
+            bot.sendMessage({ to: channelID, message: 'That\'s the header column you tit.' });
+        }
     }
 break;
 
