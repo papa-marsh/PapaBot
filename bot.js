@@ -534,7 +534,7 @@ case 'admin':
                 bot.sendMessage({ to: channelID, message: 'Error - Backup failed.' });
             }
         }
-        if (args[1] == 'restore' && isPapa) {
+        if (args[1] == 'restore') {
             try {
                 dbRestore(args[2])
                 bot.sendMessage({ to: channelID, message: 'Database restored from file: ' + args[2] });
