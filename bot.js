@@ -523,6 +523,13 @@ case 'admin':
     if (args[1] == 'backup') {
         dbBackup('db_BACKUP_MANUAL.xlsx');
         bot.sendMessage({ to: consoleID, message: 'Database backup created.' });
+
+        try {
+            dbBackup('db_BACKUP_MANUAL.xlsx');
+            bot.sendMessage({ to: consoleID, message: 'Database backup created.' });
+        } catch(e) {
+            bot.sendMessage({ to: channelID, message: 'Error - Backup failed.' });
+        }
     }
     if (args[1] == 'restore') {
         try {
