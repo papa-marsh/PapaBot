@@ -14,6 +14,7 @@ var consoleID = '622937431586373633';
 var testingID = '621375349334343690';
 var generalID = '619514907825799189';
 var pingpong = 0;
+var errorCount = 0;
 var backupFlag01 = 0;
 var backupFlag24 = 0;
 var pause = 0;
@@ -25,15 +26,26 @@ var server = bot.servers['535475301866537010'];
 (function(){ setInterval(async function() {
 {//Init
 pingpong == 5 ? pingpong = 1 : pingpong++;
-userIDList = await dbReadCol('Discord', 'A');
-usernameList = await dbReadCol('Discord', 'B');
-lastOnlineList = await dbReadCol('Discord', 'C');
-var date = new Date();
+if (errorCount >= 4320) {
+    errorCount = 0;
 }
+var date = new Date();
+try {
+    userIDList = await dbReadCol('Discord', 'A');
+    usernameList = await dbReadCol('Discord', 'B');
+    lastOnlineList = await dbReadCol('Discord', 'C');
+} catch(e) {
+    pingpong = 0;
+    errorCount++;
+    if (errorCount == 5) {
+        bot.sendMessage({ to: consoleID, message: 'The database is fucked.' });
+    }
+}}
 
 switch(pingpong) {
 
 case 1: //Calendar
+    errorCount = 0;
     var now = parseInt((date.getMonth() + 1) + (date.getDate() < 10 ? "0" : "") + date.getDate()
         + (date.getHours() < 10 ? "0" : "") + date.getHours() + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes(), 10);
     var calEvent = await dbReadCol('Calendar', 2);
@@ -79,8 +91,10 @@ break;
 case 3: //Last Online
     for (i in userIDList) {
         member = server.members[userIDList[i]];
-        if (member.status == 'online') {
-            lastOnlineList[i] = (date.toUTCString().substring(5));
+        if (member) {
+            if (member.status == 'online') {
+                lastOnlineList[i] = (date.toUTCString().substring(5));
+            }
         }
     }
     dbWriteCol('Discord', 'C', lastOnlineList);
