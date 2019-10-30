@@ -524,6 +524,14 @@ case 'admin':
         dbBackup('db_BACKUP_MANUAL.xlsx');
         bot.sendMessage({ to: consoleID, message: 'Database backup created.' });
     }
+    if (args[1] == 'restore') {
+        try {
+            dbRestore(args[2])
+            bot.sendMessage({ to: channelID, message: 'Database restored from file: ' + args[2] });
+        } catch(e) {
+            bot.sendMessage({ to: channelID, message: 'Error - Restore failed.' });
+        }
+    }
 break;
 
 case 'roast':
@@ -668,4 +676,9 @@ async function dbBackup(file) {
     let workbook = new Excel.Workbook();
     workbook = await workbook.xlsx.readFile('db.xlsx');
     workbook.xlsx.writeFile(file);
+}
+async function dbRestore(file) {
+    let workbook = new Excel.Workbook();
+    workbook = await workbook.xlsx.readFile(file);
+    workbook.xlsx.writeFile('db.xlsx');
 }
