@@ -518,28 +518,33 @@ case 'admin':
         result = await dbReadCell('Admin', 'A', '15')
         bot.sendMessage({ to: channelID, message: result });
     }
-    if (args[1] == 'reset' && isPapa) {
-        dbDeleteCol('Alliance', 2, 2);
-        bot.sendMessage({ to: consoleID, message: 'Bonus sector list and hero placement cleared.' });
-    }
-    if (args[1] == 'backup' && isPapa) {
-        dbBackup('db_BACKUP_MANUAL.xlsx');
-        bot.sendMessage({ to: consoleID, message: 'Database backup created.' });
-
-        try {
+    else if (isPapa) {
+        if (args[1] == 'reset') {
+            dbDeleteCol('Alliance', 2, 2);
+            bot.sendMessage({ to: consoleID, message: 'Bonus sector list and hero placement cleared.' });
+        }
+        if (args[1] == 'backup') {
             dbBackup('db_BACKUP_MANUAL.xlsx');
             bot.sendMessage({ to: consoleID, message: 'Database backup created.' });
-        } catch(e) {
-            bot.sendMessage({ to: channelID, message: 'Error - Backup failed.' });
+
+            try {
+                dbBackup('db_BACKUP_MANUAL.xlsx');
+                bot.sendMessage({ to: consoleID, message: 'Database backup created.' });
+            } catch(e) {
+                bot.sendMessage({ to: channelID, message: 'Error - Backup failed.' });
+            }
+        }
+        if (args[1] == 'restore' && isPapa) {
+            try {
+                dbRestore(args[2])
+                bot.sendMessage({ to: channelID, message: 'Database restored from file: ' + args[2] });
+            } catch(e) {
+                bot.sendMessage({ to: channelID, message: 'Error - Restore failed.' });
+            }
         }
     }
-    if (args[1] == 'restore' && isPapa) {
-        try {
-            dbRestore(args[2])
-            bot.sendMessage({ to: channelID, message: 'Database restored from file: ' + args[2] });
-        } catch(e) {
-            bot.sendMessage({ to: channelID, message: 'Error - Restore failed.' });
-        }
+    else {
+        bot.sendMessage({ to: channelID, message: 'Only Papa can use that command.' });
     }
 break;
 
