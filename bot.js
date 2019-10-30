@@ -139,7 +139,6 @@ var args = message.substring(1).split(' ');
 var server = bot.servers['535475301866537010'];
 var isPapa = 0;
 userID == 467426493912317953 ? isPapa = 1 : isPapa = 0;
-console.log(isPapa);
 if (args[0] == 'pause') { pause = 1; }
 else if (args[0] == 'unpause') { pause = 0; }
 }
