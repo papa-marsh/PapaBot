@@ -137,6 +137,9 @@ if (message.substring(0, 1) == '!' && bot.id != userID) {
 {//Init
 var args = message.substring(1).split(' ');
 var server = bot.servers['535475301866537010'];
+var isPapa = 0;
+userID == 467426493912317953 ? isPapa = 1 : isPapa = 0;
+console.log(isPapa);
 if (args[0] == 'pause') { pause = 1; }
 else if (args[0] == 'unpause') { pause = 0; }
 }
@@ -516,11 +519,11 @@ case 'admin':
         result = await dbReadCell('Admin', 'A', '15')
         bot.sendMessage({ to: channelID, message: result });
     }
-    if (args[1] == 'reset') {
+    if (args[1] == 'reset' && isPapa) {
         dbDeleteCol('Alliance', 2, 2);
         bot.sendMessage({ to: consoleID, message: 'Bonus sector list and hero placement cleared.' });
     }
-    if (args[1] == 'backup') {
+    if (args[1] == 'backup' && isPapa) {
         dbBackup('db_BACKUP_MANUAL.xlsx');
         bot.sendMessage({ to: consoleID, message: 'Database backup created.' });
 
@@ -531,7 +534,7 @@ case 'admin':
             bot.sendMessage({ to: channelID, message: 'Error - Backup failed.' });
         }
     }
-    if (args[1] == 'restore') {
+    if (args[1] == 'restore' && isPapa) {
         try {
             dbRestore(args[2])
             bot.sendMessage({ to: channelID, message: 'Database restored from file: ' + args[2] });
