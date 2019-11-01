@@ -612,6 +612,10 @@ case '8ball':
     }
 break;
 
+case 'ping':
+    bot.sendMessage({ to: channelID, message: 'pong' });
+break;
+
 default:
     if (message.toLowerCase().indexOf('joke') != -1) {
         jokeList = await dbReadCol('Fun', 1);
@@ -627,6 +631,7 @@ default:
         bot.sendMessage({ to: channelID, message: output });
     }
 break;
+
 
 }}}});
 
