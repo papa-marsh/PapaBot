@@ -524,9 +524,6 @@ case 'admin':
             bot.sendMessage({ to: consoleID, message: 'Bonus sector list and hero placement cleared.' });
         }
         if (args[1] == 'backup') {
-            dbBackup('db_BACKUP_MANUAL.xlsx');
-            bot.sendMessage({ to: consoleID, message: 'Database backup created.' });
-
             try {
                 dbBackup('db_BACKUP_MANUAL.xlsx');
                 bot.sendMessage({ to: consoleID, message: 'Database backup created.' });
