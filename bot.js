@@ -23,9 +23,10 @@ var pause = 0;
 bot.on('ready', function (evt) {
 logger.info(bot.username + ' - Connected.');
 var server = bot.servers['535475301866537010'];
+bot.sendMessage({ to: consoleID, message: 'PapaBot connected. Status: Ready to fuck shit up' });
 (function(){ setInterval(async function() {
 {//Init
-pingpong == 5 ? pingpong = 1 : pingpong++;
+pingpong >= 5 ? pingpong = 1 : pingpong++;
 if (errorCount >= 4320) {
     errorCount = 0;
 }
