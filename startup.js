@@ -9,18 +9,18 @@ var date = new Date();
 var hour = parseInt(date.getHours());
 var minute = parseInt(date.getMinutes());
 
-if ((hour == 0 || hour == 6 || hour == 12 || hour == 18) && minute == 0 && killFlag == 0) {
+if ((hour == 3 || hour == 9 || hour == 15 || hour == 21) && minute == 59 && killFlag == 0) {
     child.kill();
     killFlag = 1;
 }
 
-if ((hour == 0 || hour == 6 || hour == 12 || hour == 18) && minute == 1 && forkFlag == 0) {
+if ((hour == 4 || hour == 10 || hour == 16 || hour == 22) && minute == 0 && forkFlag == 0) {
     child = cp.fork('./bot.js');
     forkFlag = 1;
-    console.log('New child created at ' + hour + ':' + minute);
+    console.log('New child created at ' + hour + ':0' + minute);
 }
 
-if (minute == 2) {
+if (minute == 1) {
     killFlag = 0
     forkFlag = 0;
 }
