@@ -21,7 +21,7 @@ var pause = 0;
 }
 
 bot.on('ready', function (evt) {
-logger.info(bot.username + ' - Connected.');
+console.log('PapaBot - Connected')
 var server = bot.servers['535475301866537010'];
 (function(){ setInterval(async function() {
 {//Init
