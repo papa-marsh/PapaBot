@@ -91,9 +91,10 @@ break;
 case 3: //Last Online
     for (i in userIDList) {
         member = server.members[userIDList[i]];
+        lastSeen = (date.getMonth() + 1) + '/' + date.getDate() + ' at ' + date.getHours() + ':' + date.getMinutes();
         if (member) {
             if (member.status == 'online') {
-                lastOnlineList[i] = (date.toUTCString().substring(5));
+                lastOnlineList[i] = lastSeen;
             }
         }
     }
@@ -135,7 +136,7 @@ break;
 bot.on('message', async function (user, userID, channelID, message, evt) {
 {//bori
     var lower = message.toLowerCase();
-    if (lower.indexOf('bori') != -1 || lower.indexOf('boricua') != -1) {
+    if ((lower.indexOf('bori') != -1 || lower.indexOf('boricua') != -1) && bot.id != userID) {
         bot.uploadFile( { to: channelID, file: 'bori.gif' } );
     }
 }
@@ -485,11 +486,7 @@ case 'status':
     if (!args[1]) {
         var output = '';
         for (i=1; i<usernameList.length; i++) {
-            lastOnline = lastOnlineList[i];
-            if (lastOnline) {
-                lastOnline = lastOnline.slice(0, -7);
-            }
-            output = output.concat('\n' + usernameList[i] + ' - Last Online: ' + lastOnline);
+            output = output.concat('\n' + usernameList[i] + ' - Last Online: ' + lastOnlineList[i]);
         }
         bot.sendMessage({ to: channelID, message: output });
     }
@@ -639,7 +636,6 @@ default:
         bot.sendMessage({ to: channelID, message: output });
     }
 break;
-
 
 }}}});
 
