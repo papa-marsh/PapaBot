@@ -488,7 +488,7 @@ case 'status':
         bot.sendMessage({ to: channelID, message: output });
     }
     else {
-        var member = args[1].toLowerCase();
+        var member = message.substring(message.indexOf(args[2])).toLowerCase();
         var memberIndex = 0;
         for (i=1; i<usernameList.length; i++) {
             if (usernameList[i].toLowerCase().indexOf(member) != -1) {
@@ -519,7 +519,7 @@ case 'admin':
         bot.sendMessage({ to: channelID, message: result });
     }
     else if (isPapa) {
-        if (args[1] == 'reset') {
+        if (args[1] == 'reset' && !args[2]) {
             dbDeleteCol('Alliance', 2, 2);
             bot.sendMessage({ to: consoleID, message: 'Bonus sector list and hero placement cleared.' });
         }
@@ -538,6 +538,11 @@ case 'admin':
             } catch(e) {
                 bot.sendMessage({ to: channelID, message: 'Error - Restore failed.' });
             }
+        }
+        if (args[1] == 'status' && args[2] == 'reset')
+        {
+            dbDeleteCol('Discord', 1, 3);
+            bot.sendMessage({ to: consoleID, message: 'Discord server status list cleared.' });
         }
     }
     else {
