@@ -133,6 +133,13 @@ break;
 }}, 5000);})();});
 
 bot.on('message', async function (user, userID, channelID, message, evt) {
+{//bori
+    var lower = message.toLowerCase();
+    if (lower.indexOf('bori') != -1 || lower.indexOf('boricua') != -1) {
+        bot.uploadFile( { to: channelID, file: 'bori.gif' } );
+    }
+}
+
 if (message.substring(0, 1) == '!' && bot.id != userID) {
 {//Init
 var args = message.substring(1).split(' ');
