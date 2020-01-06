@@ -139,7 +139,6 @@ bot.on('message', async function (user, userID, channelID, message, evt) {
         bot.uploadFile( { to: channelID, file: 'bori.gif' } );
     }
 }
-
 if (message.substring(0, 1) == '!' && bot.id != userID) {
 {//Init
 var args = message.substring(1).split(' ');
