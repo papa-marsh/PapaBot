@@ -91,7 +91,11 @@ break;
 case 3: //Last Online
     for (i in userIDList) {
         member = server.members[userIDList[i]];
-        lastSeen = (date.getMonth() + 1) + '/' + date.getDate() + ' at ' + date.getHours() + ':' + date.getMinutes();
+        lastSeen = (date.getMonth() + 1) + '/' + date.getDate() + ' at ' + date.getHours() + ':';
+        if (date.getMinutes < 10) {
+            lastSeen = lastSeen + '0';
+        }
+        lastSeen + date.getMinutes());
         if (member) {
             if (member.status == 'online') {
                 lastOnlineList[i] = lastSeen;
