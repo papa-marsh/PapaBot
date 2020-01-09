@@ -74,7 +74,6 @@ case 2: //Backup
     if (date.getHours() == 5 && !backupFlag24) {
         dbBackup('db_BACKUP_24.xlsx');
         backupFlag24 = 1;
-        bot.sendMessage({ to: consoleID, message: 'Database backup created.' });
     }
     if (date.getHours() == 6) {
         backupFlag24 = 0;
