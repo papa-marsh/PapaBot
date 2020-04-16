@@ -293,7 +293,7 @@ case 'status':
         bot.sendMessage({ to: channelID, message: output });
     }
     else {
-        var member = message.substring(message.indexOf(args[2])).toLowerCase();
+        var member = message.substring(message.indexOf(args[1])).toLowerCase();
         var memberIndex = 0;
         for (i=1; i<usernameList.length; i++) {
             if (usernameList[i].toLowerCase().indexOf(member) != -1) {
