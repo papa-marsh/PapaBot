@@ -9,10 +9,9 @@ logger.level = 'debug';
 var bot = new Discord.Client({ token: auth.token, autorun: true });
 }
 {
-//var announceID = '619358591740018698';
-//var consoleID = '622937431586373633';
-//var testingID = '621375349334343690';
-//var generalID = '619514907825799189';
+var announceID = '700080304731324426';
+var testingID = '700371929441370183';
+var generalID = '700078682265485397';
 var pingpong = 0;
 var errorCount = 0;
 var backupFlag01 = 0;
@@ -22,8 +21,9 @@ var pause = 0;
 
 bot.on('ready', function (evt) {
 console.log('PapaBot - Connected')
-var server = bot.servers['535475301866537010'];
+var server = bot.servers['700078682265485394'];
 (function(){ setInterval(async function() {
+
 {//Init
 pingpong >= 5 ? pingpong = 1 : pingpong++;
 if (errorCount >= 4320) {
@@ -33,12 +33,12 @@ var date = new Date();
 try {
     userIDList = await dbReadCol('Discord', 'A');
     usernameList = await dbReadCol('Discord', 'B');
-    lastOnlineList = await dbReadCol('Discord', 'C');
+    lastOnlineList = await dbReadCol('Discord', 'D');
 } catch(e) {
     pingpong = 0;
     errorCount++;
     if (errorCount == 5) {
-        bot.sendMessage({ to: consoleID, message: 'The database is fucked.' });
+        bot.sendMessage({ to: generalID, message: 'The database is fucked.' });
     }
 }}
 
@@ -56,7 +56,7 @@ case 1: //Calendar
             dbDeleteCol('Calendar', 2, 1);
         }
         else if (now == (eventTime - 50) && calEvent[5] == 'y') {
-            bot.sendMessage({ to: announceID, message: '@everyone - **10 minutes** until ' + calEvent[1] });
+            bot.sendMessage({ to: announceID, message: '**10 minutes** until ' + calEvent[1] });
             dbWriteCell('Calendar', 'B', '5', 'n');
         }
         else if (now == (eventTime - 100) && calEvent[6] == 'y') {
@@ -101,7 +101,7 @@ case 3: //Last Online
             }
         }
     }
-    dbWriteCol('Discord', 'C', lastOnlineList);
+    dbWriteCol('Discord', 'D', lastOnlineList);
 break;
 
 case 4: //Member List
@@ -116,7 +116,7 @@ case 4: //Member List
     }
     if (usernameFlag) {
         dbWriteCol('Discord', 'B', usernameList);
-        bot.sendMessage({ to: consoleID, message: 'New UserID found - username added.' });
+        bot.sendMessage({ to: generalID, message: 'New UserID found - username added.' });
     }
     var addMessage = 'Added user to database ';
     for (id in bot.users) {
@@ -129,7 +129,7 @@ case 4: //Member List
     }
     if (addFlag) {
         dbWriteCol('Discord', 'A', userIDList);
-        bot.sendMessage({ to: consoleID, message: addMessage });
+        bot.sendMessage({ to: generalID, message: addMessage });
     }
 pingpong = 0;
 break;
@@ -146,7 +146,7 @@ bot.on('message', async function (user, userID, channelID, message, evt) {
 if (message.substring(0, 1) == '!' && bot.id != userID) {
 {//Init
 var args = message.substring(1).split(' ');
-var server = bot.servers['535475301866537010'];
+var server = bot.servers['700078682265485394'];
 var isPapa = 0;
 userID == 467426493912317953 ? isPapa = 1 : isPapa = 0;
 if (args[0] == 'pause') { pause = 1; }
@@ -158,209 +158,8 @@ if (pause == 0) {
 switch(args[0]) {
 
 case 'help':
-    if (!args[1]) {
-        result = await dbReadCell('Admin', 'A', '8')
-        bot.sendMessage({ to: channelID, message: result });
-    }
-    else if (args[1] == 'allies' || args[1] == 'plans') {
-        result = await dbReadCell('Admin', 'A', '11')
-        bot.sendMessage({ to: channelID, message: result });
-    }
-    else if (args[1] == 'members') {
-        result = await dbReadCell('Admin', 'A', '12')
-        bot.sendMessage({ to: channelID, message: result });
-    }
-    else if (args[1] == 'sectors') {
-        result = await dbReadCell('Admin', 'A', '13')
-        bot.sendMessage({ to: channelID, message: result });
-    }
-    else if (args[1] == 'bonus') {
-        result = await dbReadCell('Admin', 'A', '14')
-        bot.sendMessage({ to: channelID, message: result });
-    }
-    else if (args[1] == 'notes') {
-        result = await dbReadCell('Admin', 'A', '15')
-        bot.sendMessage({ to: channelID, message: result });
-    }
-break;
-
-case 'allies':
-    if (!args[1]) {
-        result = await dbReadCell('Admin', 'A', '2')
-        bot.sendMessage({ to: channelID, message: result });
-    }
-    if (args[1] == 'set') {
-        var val = message.substring(12)
-        dbWriteCell('Admin', 'A', '2', val);
-        bot.sendMessage({ to: consoleID, message: 'New allies message set.' });
-    }
-break;
-
-case 'plans':
-    if (!args[1]) {
-        result = await dbReadCell('Admin', 'A', '5')
-        bot.sendMessage({ to: channelID, message: result });
-    }
-    if (args[1] == 'set') {
-        var val = message.substring(11)
-        dbWriteCell('Admin', 'A', '5', val);
-        bot.sendMessage({ to: consoleID, message: 'New plans message set.' });
-    }
-break;
-
-case 'members': case 'member':
-    memberList = await dbReadCol('Alliance', 'A');
-    if (!args[1]) {
-        var memberCount = 0;
-        for (var i=25; i>0; i--){
-            if (memberList[i]) {
-                memberCount++
-            }
-        }
-        bot.sendMessage({ to: channelID, message: memberCount + ' Members:\n' + memberList.slice(1) });
-    }
-    if (args[1] == 'add') {
-        var memberAdd = message.substring(message.indexOf(args[2])).toLowerCase();
-        if (memberList.filter(String).length <25) {
-            for (var i=1; i<26; i++){
-                if (!memberList[i]) {
-                    var empty = i
-                }
-            }
-            dbWriteCell('Alliance', 'A', empty, memberAdd);
-            bot.sendMessage({ to: consoleID, message: 'Added ' + memberAdd + ' to member list.' });
-        }
-        else bot.sendMessage({ to: channelID, message: 'Error: Member list full.' });
-    }
-    if (args[1] == 'remove') {
-        var memberRemove = message.substring(message.indexOf(args[2])).toLowerCase();
-        var removal = memberList.indexOf(memberRemove);
-        if (removal != -1) {
-            dbWriteCell('Alliance', 'A', removal, '');
-            bot.sendMessage({ to: consoleID, message: 'Removed ' + memberRemove + ' from member list.' });
-        }
-        else bot.sendMessage({ to: channelID, message: 'Error: Couldn\'t find member: ' + memberRemove + '.' });
-    }
-break;
-
-case 'bonus':
-    memberList = await dbReadCol('Alliance', 'A');
-    heroList = await dbReadCol('Alliance', 'B');
-    sectorList = await dbReadCol('Alliance', 'C');
-    if (!args[1]) {
-        var output = '**These sectors need bonus heroes:**\n';
-        var outputTemp1 = '';
-        var outputTemp2 = '';
-        var outputTemp3 = '';
-        for (var i=1; i<sectorList.length; i++) {
-            if (heroList.indexOf(sectorList[i]) == -1) {
-                outputTemp1 = outputTemp1.concat(', ' + sectorList[i]);
-            }
-        }
-        for (var i=1; i<memberList.length; i++) {
-            if (!heroList[i]) {
-                outputTemp2 = outputTemp2.concat(', ' + memberList[i]);
-            }
-            if (sectorList.indexOf(heroList[i]) == -1 && outputTemp2.indexOf(memberList[i]) == -1) {
-                outputTemp3 = outputTemp3.concat(', ' + memberList[i]);
-                var noStarFlag = 1;
-            }
-        }
-        output = output.concat(outputTemp1.substring(2), '\n**These bonus heroes are available:**\n');
-        output = output.concat(outputTemp2.substring(2));
-        if (noStarFlag) {
-            output = output.concat('\n**These bonu heroes are on no-star sectors:\n**');
-            output = output.concat(outputTemp3.substring(2));
-        }
-        bot.sendMessage({ to: channelID, message: output });
-    }
-    if (args[1] == 'list') {
-        var output = '';
-        for (var i=1; i-1<memberList.length; i++) {
-            if (heroList[i]) {
-                 if (sectorList.indexOf(heroList[i]) != -1) {
-                    output = output.concat('\nSector ' + heroList[i] + ' - ' + memberList[i]);
-                }
-                else {
-                    output = output.concat('\n**Sector ' + heroList[i] + ' - ' + memberList[i] + '**');
-                }
-            }
-            else if (memberList[i]) {
-                output = output.concat('\n------------- ' + memberList[i]);
-            }
-        }
-        output = output.concat('\n**Bold text = no-star sector.**');
-        bot.sendMessage({ to: channelID, message: output });
-    }
-    if (args[1] == 'add') {
-        var sector = message.split(' ')[2];
-        var member = message.substring(sector.length + 12).toLowerCase();
-        var memberIndex = 0;
-        for (i=1; i<memberList.length; i++) {
-            if (memberList[i].indexOf(member) != -1) {
-                memberIndex = i;
-                member = memberList[i];
-            }
-        }
-        if (memberIndex) {
-            dbWriteCell('Alliance', 'B', memberIndex, sector);
-            bot.sendMessage({ to: consoleID, message: member + '\'s bonus hero is now on sector ' + sector + '.' });
-        }
-        else bot.sendMessage({ to: channelID, message: 'Error: Couldn\'t find member: ' + member + '.' });
-    }
-    if (args[1] == 'remove') {
-        var removal = message.substring(14);
-        var heroIndex = heroList.indexOf(removal);
-        var memberIndex = 0;
-        for (i=1; i<memberList.length; i++) {
-            if (memberList[i].indexOf(removal) != -1) {
-                memberIndex = i;
-                removal = memberList[i];
-            }
-        }
-        if (memberIndex && removal) {
-            dbWriteCell('Alliance', 'B', memberIndex, '');
-            bot.sendMessage({ to: consoleID, message: removal + '\'s bonus hero is now unused.' });
-        }
-        else if (heroIndex != -1 && removal) {
-            dbWriteCell('Alliance', 'B', heroIndex, '');
-            bot.sendMessage({ to: consoleID, message: 'Sector ' + removal + ' no longer has a bonus hero.' });
-        }
-        else {
-            bot.sendMessage({ to: channelID, message: 'Error: Couldn\'t find ' + removal + ' in member/bonus hero lists.' });
-        }
-    }
-break;
-
-case 'sectors': case 'sector':
-    sectorList = await dbReadCol('Alliance', 'C');
-    if (!args[1]) {
-        var sectorCount = sectorList[1] ? sectorList.length - 1 : 0;
-        bot.sendMessage({ to: channelID, message: sectorCount + ' Bonus Sectors:\n' + sectorList.slice(1) });
-    }
-    if (args[1] == 'add') {
-        var sectorAdd = message.substring(message.indexOf(args[2])).split(',');
-        var output = 'Added bonus sector(s):'
-        for (var j=0; j<sectorAdd.length; j++) {
-            sectorList[sectorList.length] = sectorAdd[j];
-            output = output.concat('\n' + sectorAdd[j]);
-        }
-        dbWriteCol('Alliance', 'C', sectorList)
-        bot.sendMessage({ to: consoleID, message: output });
-    }
-    if (args[1] == 'remove') {
-        var sectorRemove = args[2];
-        var removal = sectorList.indexOf(sectorRemove);
-        if (removal != -1) {
-            for (i=removal; i<sectorList.length-1; i++) {
-                sectorList[i] = sectorList[i+1];
-            }
-            sectorList[sectorList.length-1] = null;
-            dbWriteCol('Alliance', 'C', sectorList);
-            bot.sendMessage({ to: consoleID, message: 'Removed sector ' + sectorRemove + ' from bonus sector list.' });
-        }
-        else bot.sendMessage({ to: channelID, message: 'Couldn\'t find sector: ' + sectorRemove + '.' });
-    }
+    result = await dbReadCell('Admin', 'A', '5')
+    bot.sendMessage({ to: channelID, message: result });
 break;
 
 case 'calendar':
@@ -399,7 +198,7 @@ case 'calendar':
             addAlerts = args[7] == 'y' ? addAlerts.concat('\n1 day alert: ON') : addAlerts.concat('\n1 day alert: OFF');
             dbWriteCol('Calendar', calendar.length, addEvent);
             output = 'Added calendar event: ' + eventName + '\n' + addDate + ' at ' + addTime + addAlerts;
-            bot.sendMessage({ to: consoleID, message: output });
+            bot.sendMessage({ to: channelID, message: output });
         }
         else {
             bot.sendMessage({ to: channelID, message: 'Syntax:\n*!calendar add mm dd hh 10m 1h 1d event name* (alerts are y/n)' });
@@ -409,7 +208,7 @@ case 'calendar':
         if (args[2] != 0) {
             var removal = parseInt(args[2]) + 1;
             dbDeleteCol('Calendar', removal, 1);
-            bot.sendMessage({ to: consoleID, message: 'Removed calendar event ' + removal });
+            bot.sendMessage({ to: channelID, message: 'Removed calendar event ' + removal });
         }
         else {
             bot.sendMessage({ to: channelID, message: 'That\'s the header column you tit.' });
@@ -418,21 +217,21 @@ case 'calendar':
 break;
 
 case 'notes':
-    allianceList = await dbReadRow('Notes', 1);
+    pageList = await dbReadRow('Notes', 1);
     if (!args[1]) {
-        output = 'Alliances with existing notes:\n' + allianceList.slice(1);
-        output = output.concat('\nType _!notes <tag>_ to see that alliance\'s notes' );
+        output = 'Existing notes:\n' + pageList.slice(1);
+        output = output.concat('\nType _!notes <page>_ to see that page\'s notes' );
         bot.sendMessage({ to: channelID, message: output });
     }
     else {
-        alliance = args[1].toUpperCase();
-        notesIndex = allianceList.indexOf(alliance);
+        page = args[1].toUpperCase();
+        notesIndex = pageList.indexOf(page);
         if (notesIndex != -1) {
             notes = await dbReadCol('Notes', notesIndex);
         }
         if (notesIndex != -1 && args[2] != 'create') {
             if (!args[2]) {
-                var output = 'Stored notes for ' + alliance + '. (Newest first)';
+                var output = 'Stored notes for ' + page + '. (Newest first)';
                 if (notes.length == 2) {
                     output = output.concat('\nNone');
                 }
@@ -442,10 +241,10 @@ case 'notes':
                 bot.sendMessage({ to: channelID, message: output });
             }
             else if (args[2] == 'add') {
-                notes[0] = alliance;
+                notes[0] = page;
                 notes[1] = message.substring(message.indexOf(args[3]));
                 dbWriteCol('Notes', notesIndex, notes);
-                bot.sendMessage({ to: consoleID, message: 'New note added for ' + alliance + '.' });
+                bot.sendMessage({ to: channelID, message: 'New note added for ' + page + '.' });
 
             }
             else if (args[2] == 'remove') {
@@ -460,32 +259,32 @@ case 'notes':
                     }
                     notes[notes.length-1] = null;
                     dbWriteCol('Notes', notesIndex, notes);
-                    bot.sendMessage({ to: consoleID, message: 'Note removed from ' + alliance + '.' });
+                    bot.sendMessage({ to: channelID, message: 'Note removed from ' + page + '.' });
                 }
             }
             else if (args[2] == 'delete' && !args[3]) {
                 dbDeleteCol('Notes', notesIndex, 1);
-                bot.sendMessage({ to: consoleID, message: alliance + ' removed from note categories' });
+                bot.sendMessage({ to: channelID, message: page + ' removed from note categories' });
             }
         }
         else if (args[2] == 'create') {
             if (notesIndex == -1) {
-                dbWriteCell('Notes', allianceList.length + 1, 1, alliance);
-                bot.sendMessage({ to: consoleID, message: 'Added ' + alliance + ' to note categories.' });
+                dbWriteCell('Notes', pageList.length + 1, 1, page);
+                bot.sendMessage({ to: channelID, message: 'Added ' + page + ' to note pages.' });
             }
             else {
-                bot.sendMessage({ to: channelID, message: alliance + ' is already listed as a note category.' });
+                bot.sendMessage({ to: channelID, message: page + ' is already listed as a note page.' });
             }
         }
         else {
-            bot.sendMessage({ to: channelID, message: 'Couldn\'t find ' + alliance + ' in notes.' });
+            bot.sendMessage({ to: channelID, message: 'Couldn\'t find ' + page + ' in note pages.' });
         }
     }
 break;
 
 case 'status':
     usernameList = await dbReadCol('Discord', 'B');
-    lastOnlineList = await dbReadCol('Discord', 'C');
+    lastOnlineList = await dbReadCol('Discord', 'D');
     if (!args[1]) {
         var output = '';
         for (i=1; i<usernameList.length; i++) {
@@ -512,27 +311,11 @@ case 'status':
 break;
 
 case 'admin':
-    if (!args[1]) {
-        result = await dbReadCell('Admin', 'A', '11')
-        bot.sendMessage({ to: channelID, message: result });
-        result = await dbReadCell('Admin', 'A', '12')
-        bot.sendMessage({ to: channelID, message: result });
-        result = await dbReadCell('Admin', 'A', '13')
-        bot.sendMessage({ to: channelID, message: result });
-        result = await dbReadCell('Admin', 'A', '14')
-        bot.sendMessage({ to: channelID, message: result });
-        result = await dbReadCell('Admin', 'A', '15')
-        bot.sendMessage({ to: channelID, message: result });
-    }
-    else if (isPapa) {
-        if (args[1] == 'reset' && !args[2]) {
-            dbDeleteCol('Alliance', 2, 2);
-            bot.sendMessage({ to: consoleID, message: 'Bonus sector list and hero placement cleared.' });
-        }
+    if (isPapa) {
         if (args[1] == 'backup') {
             try {
                 dbBackup('db_BACKUP_MANUAL.xlsx');
-                bot.sendMessage({ to: consoleID, message: 'Database backup created.' });
+                bot.sendMessage({ to: channelID, message: 'Database backup created.' });
             } catch(e) {
                 bot.sendMessage({ to: channelID, message: 'Error - Backup failed.' });
             }
@@ -548,7 +331,7 @@ case 'admin':
         if (args[1] == 'status' && args[2] == 'reset')
         {
             dbDeleteCol('Discord', 1, 3);
-            bot.sendMessage({ to: consoleID, message: 'Discord server status list cleared.' });
+            bot.sendMessage({ to: channelID, message: 'Discord server status list cleared.' });
         }
     }
     else {
@@ -560,7 +343,7 @@ case 'roast':
     roastList = await dbReadCol('Fun', 2);
     random = (Math.floor(Math.random() * 75) + 1);
     if (!args[1]) {
-        bot.sendMessage({ to: channelID, message: 'Roast who?' });
+        bot.sendMessage({ to: channelID, message: 'Roast whom?' });
     }
     else if (args[1] == 'me') {
         bot.sendMessage({ to: channelID, message: roastList[random] });
@@ -653,7 +436,7 @@ bot.on('guildMemberRemove', function (member) {
 });
 
 bot.on('disconnect', function(errMsg, code) {
-    bot.sendMessage({ to: consoleID, message: 'PapaBot disconnected. Error Code: ' + errMsg });
+    bot.sendMessage({ to: generalID, message: 'PapaBot disconnected. Error Code: ' + errMsg });
 });
 
 async function dbWriteCell(sheet, col, row, val) {
