@@ -9,10 +9,10 @@ logger.level = 'debug';
 var bot = new Discord.Client({ token: auth.token, autorun: true });
 }
 {
-var announceID = '619358591740018698';
-var consoleID = '622937431586373633';
-var testingID = '621375349334343690';
-var generalID = '619514907825799189';
+//var announceID = '619358591740018698';
+//var consoleID = '622937431586373633';
+//var testingID = '621375349334343690';
+//var generalID = '619514907825799189';
 var pingpong = 0;
 var errorCount = 0;
 var backupFlag01 = 0;
@@ -643,13 +643,13 @@ break;
 }}}});
 
 bot.on('guildMemberAdd', async function (callback) {
-    welcomeMessage = await dbReadCell('Admin', 'B', '8');
+    welcomeMessage = await dbReadCell('Admin', 'A', '2');
     output = 'Welcome <@' + callback.id + '>.\n' + welcomeMessage;
     bot.sendMessage({ to: generalID, message: output });
 });
 
 bot.on('guildMemberRemove', function (member) {
-    bot.sendMessage({ to: generalID, message: member.username + ' has left the server.' });
+    bot.sendMessage({ to: generalID, message: member.username + ' has left or been kicked from the server.' });
 });
 
 bot.on('disconnect', function(errMsg, code) {
