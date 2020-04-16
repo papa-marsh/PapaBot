@@ -477,6 +477,12 @@ break;
 
 }}}});
 
+bot.on('message', function(user, userID, channelID, message, event) {
+    if (!event.d.guild_id && bot.id != userID) {
+        bot.sendMessage({ to: '467426493912317953', message: user + ' says:\n' + message});
+    }
+});
+
 bot.on('guildMemberAdd', async function (callback) {
     welcomeMessage = await dbReadCell('Admin', 'A', '2');
     output = 'Welcome <@' + callback.id + '>.\n' + welcomeMessage;
