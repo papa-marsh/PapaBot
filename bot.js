@@ -310,6 +310,58 @@ case 'status':
 
 break;
 
+case 'whois':
+    discordUserList = await dbReadCol('Discord', 'B');
+    cocUserList = await dbReadCol('Discord', 'C');
+    var doneFlag = 0;
+    if (!args[1]) {
+        output = '**Discord / Clash Member List:**'
+        for (i in discordUserList) {
+            output = output + '\n' + discordUserList[i] + ' = ' + cocUserList[i];
+        }
+        bot.sendMessage({ to: channelID, message: output });
+    }
+    else if (message.indexOf(' = ') != -1) {
+        input = message.substring(7).split(' = ')
+        for (i in discordUserList) {
+            if (input[0].toUpperCase() == discordUserList[i].toUpperCase()) {
+                dbWriteCell('Discord', 'C', i, input[1]);
+                doneFlag = 1;
+                bot.sendMessage({ to: channelID, message: 'Got it. ' + input[0] + ' on Discord is ' + input[1] + ' in Clash.' })
+                break;
+            }
+            if (input[1].toUpperCase() == discordUserList[i].toUpperCase() && !doneFlag) {
+                dbWriteCell('Discord', 'C', i, input[0]);
+                doneFlag = 1;
+                bot.sendMessage({ to: channelID, message: 'Got it. ' + input[1] + ' on Discord is ' + input[0] + ' in Clash.' })
+                break;
+            }
+        }
+        if (!doneFlag) {
+            bot.sendMessage({ to: channelID, message: 'Sorry, I couldn\'t find ' + input[0] + ' or ' + input[1] + ' in the list of Discord users.' })
+        }
+    }
+    else {
+        input = message.substring(7)
+        for (i in discordUserList) {
+            if (discordUserList[i].toUpperCase().indexOf(input.toUpperCase()) != -1) {
+                doneFlag = 1;
+                bot.sendMessage({ to: channelID, message: discordUserList[i] + ' is ' + cocUserList[i] + ' in Clash.'})
+                break;
+            }
+            cocUser = cocUserList[i] ? cocUserList[i] : 'N/A';
+            if (cocUser.toUpperCase().indexOf(input.toUpperCase()) != -1 && !doneFlag) {
+                doneFlag = 1;
+                bot.sendMessage({ to: channelID, message: cocUserList[i] + ' is ' + discordUserList[i] + ' on Discord.'})
+                break;
+            }
+        }
+        if (!doneFlag) {
+            bot.sendMessage({ to: channelID, message: 'Sorry, I couldn\'t find ' + input + ' in the list of Discord or Clash users.'})
+        }
+    }
+break;
+
 case 'admin':
     if (isPapa) {
         if (args[1] == 'backup') {
