@@ -1,6 +1,5 @@
 var cp = require('child_process');
 var child = cp.fork('./bot.js');
-var pingpong = 0;
 var killFlag = 0;
 var forkFlag = 0;
 
