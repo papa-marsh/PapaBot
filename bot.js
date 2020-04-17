@@ -12,6 +12,7 @@ var bot = new Discord.Client({ token: auth.token, autorun: true });
 var announceID = '700080304731324426';
 var testingID = '700371929441370183';
 var generalID = '700078682265485397';
+var consoleID = '700700651432312873';
 var pingpong = 0;
 var errorCount = 0;
 var backupFlag01 = 0;
@@ -38,7 +39,7 @@ try {
     pingpong = 0;
     errorCount++;
     if (errorCount == 5) {
-        bot.sendMessage({ to: generalID, message: 'The database is fucked.' });
+        bot.sendMessage({ to: consoleID, message: 'The database is fucked.' });
     }
 }}
 
@@ -116,7 +117,7 @@ case 4: //Member List
     }
     if (usernameFlag) {
         dbWriteCol('Discord', 'B', usernameList);
-        bot.sendMessage({ to: generalID, message: 'New UserID found - username added.' });
+        bot.sendMessage({ to: consoleID, message: 'New UserID found - username added.' });
     }
     var addMessage = 'Added user to database ';
     for (id in bot.users) {
@@ -129,7 +130,7 @@ case 4: //Member List
     }
     if (addFlag) {
         dbWriteCol('Discord', 'A', userIDList);
-        bot.sendMessage({ to: generalID, message: addMessage });
+        bot.sendMessage({ to: consoleID, message: addMessage });
     }
 pingpong = 0;
 break;
@@ -494,7 +495,7 @@ bot.on('guildMemberRemove', function (member) {
 });
 
 bot.on('disconnect', function(errMsg, code) {
-    bot.sendMessage({ to: generalID, message: 'PapaBot disconnected. Error Code: ' + errMsg });
+    bot.sendMessage({ to: consoleID, message: 'PapaBot disconnected. Error Code: ' + errMsg });
 });
 
 async function dbWriteCell(sheet, col, row, val) {
