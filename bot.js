@@ -140,7 +140,7 @@ break;
 bot.on('message', async function (user, userID, channelID, message, evt) {
 {//bori
     var lower = message.toLowerCase();
-    if ((lower.indexOf('bori') != -1 || lower.indexOf('boricua') != -1) && bot.id != userID) {
+    if ((lower.indexOf('bori') != -1 || lower.indexOf('boricua') != -1) && userID != bot.id && userID != '406129972982317068') {
         bot.uploadFile( { to: channelID, file: 'bori.gif' } );
     }
 }
