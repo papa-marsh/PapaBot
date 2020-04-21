@@ -495,7 +495,12 @@ bot.on('guildMemberRemove', function (member) {
 });
 
 bot.on('disconnect', function(errMsg, code) {
-    bot.sendMessage({ to: consoleID, message: 'PapaBot disconnected. Error Code: ' + errMsg });
+    if (errMsg.indexOf('Reconnect requested by Discord') == -1) {
+        bot.sendMessage({ to: consoleID, message: 'PapaBot disconnected. Error Code: ' + errMsg });
+    }
+    console.log(errMsg);
+    console.log('Attempting to reconnect');
+    bot.connect();
 });
 
 async function dbWriteCell(sheet, col, row, val) {
