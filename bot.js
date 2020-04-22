@@ -498,8 +498,7 @@ bot.on('disconnect', function(errMsg, code) {
     if (errMsg.indexOf('Reconnect requested by Discord') == -1) {
         bot.sendMessage({ to: consoleID, message: 'PapaBot disconnected. Error Code: ' + errMsg });
     }
-    console.log(errMsg);
-    console.log('Attempting to reconnect');
+    console.log(errMsg + 'Attempting to reconnect...');
     bot.connect();
 });
 
